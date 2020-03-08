@@ -201,11 +201,11 @@ body{
 
         function style(feature) {
             return {
-                fillColor: getInfoFromLAD(feature.properties.LAD13NM)["color"],
+                fillColor: getInfoFromLAD(feature.properties.ctyua15nm)["color"],
                 weight: 2,
                 opacity: 1,
                 color: 'white',
-                dashArray: '3',
+                dashArray: '',
                 fillOpacity: 0.7
             };
         }
@@ -232,7 +232,7 @@ body{
             e.target.setStyle({
                 weight: 2,
                 color: '#FFF',
-                dashArray: '3',
+                dashArray: '',
                 fillOpacity: 0.7
             });
 
@@ -267,10 +267,10 @@ body{
             
             this._div.innerHTML = '';
             if(props){
-                let data = getInfoFromLAD(props.LAD13NM);
-                this._div.innerHTML += '<h4>' + data.name + '</h4>' + data.cases + ' people';
+                let data = getInfoFromLAD(props.ctyua15nm);
+                this._div.innerHTML += '<h4>' + data.name + '</h4>' + data.cases + ' cases';
                 if(data.newCases > 0){
-                    this._div.innerHTML += "<span style='color: red;'> (+" + data.newCases + " today)</span>";
+                    this._div.innerHTML += "<span style='color: red;'> (▲" + data.newCases + ")</span>";
                 }
                 this._div.innerHTML += "<br /><svg class='sparkline' width='100' height='30' stroke-width='3'></svg>";
                 sparkline.sparkline(document.querySelector(".sparkline"), data.caseSeries);
