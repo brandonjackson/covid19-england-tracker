@@ -48,7 +48,7 @@ body{
 <title>Coronavirus in London</title>
 </head>
 <body>
-    <h1>COVID-19 London Case Tracker</h1>
+    <h1>Latest Situation of Coronavirus Disease (COVID-19) in London</h1>
     <p>Case data from <a href="https://www.gov.uk/government/publications/coronavirus-covid-19-number-of-cases-in-england/coronavirus-covid-19-number-of-cases-in-england">Public Health England</a>, last updated 2020-03-07 at 0900</p>
     <div id="mapid"></div>
     <script>
@@ -244,6 +244,7 @@ body{
         function onEachFeature(feature, layer) {
             layer.on({
                 mouseover: highlightFeature,
+                click: highlightFeature,
                 mouseout: resetHighlight
             });
         }
@@ -264,10 +265,10 @@ body{
         // method that we will use to update the control based on feature properties passed
         info.update = function (props) {
             
-            this._div.innerHTML = '<h4>Coronavirus Cases</h4>';
+            this._div.innerHTML = '';
             if(props){
                 let data = getInfoFromLAD(props.LAD13NM);
-                this._div.innerHTML += '<b>' + data.name + '</b><br />' + data.cases + ' people';
+                this._div.innerHTML += '<h4>' + data.name + '</h4>' + data.cases + ' people';
                 if(data.newCases > 0){
                     this._div.innerHTML += "<span style='color: red;'> (+" + data.newCases + " today)</span>";
                 }
