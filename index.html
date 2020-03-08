@@ -1,0 +1,303 @@
+<html>
+<head>
+<link rel="stylesheet" href="leaflet/leaflet.css" />
+<style>
+#mapid {
+    height: 600px;
+}
+.info {
+    padding: 6px 8px;
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    background: white;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+.info h4 {
+    margin: 0 0 5px;
+    color: #777;
+}
+.legend {
+    line-height: 18px;
+    color: #555;
+}
+.legend i {
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.7;
+}
+
+.sparkline {
+  stroke: red;
+  fill: #FFCCCC;
+}
+
+
+
+</style>
+<script src="leaflet/leaflet.js"></script>
+<script src="counties.js"></script>
+<script src="sparkline.js"></script>
+
+
+<title>Coronavirus in London</title>
+</head>
+<body>
+    <div id="mapid"></div>
+    <script>
+
+        const today = "2020-03-07";
+        const yesterday = "2020-03-05";
+
+        const places = {
+            "Hackney": "Hackney and City of London",
+            "City of London": "Hackney and City of London",
+            "South Bucks": "Buckinghamshire",
+            "Chiltern": "Buckinghamshire",
+            "Wycombe": "Buckinghamshire",
+            "Aylesbury Vale": "Buckinghamshire",
+            "Cambridge":"Cambridgeshire",
+            "South Cambridgeshire":"Cambridgeshire",
+            "Huntingdonshire":"Cambridgeshire",
+            "Fenland":"Cambridgeshire",
+            "East Cambridgeshire":"Cambridgeshire",
+            "Hastings": "East Sussex",
+            "Rother": "East Sussex",
+            "Wealden": "East Sussex",
+            "Eastbourne": "East Sussex",
+            "Lewes": "East Sussex",
+            "Harlow": "Essex",
+            "Epping Forest": "Essex",
+            "Brentwood": "Essex",
+            "Basildon": "Essex",
+            "Castle Point": "Essex",
+            "Rochford": "Essex",
+            "Maldon": "Essex",
+            "Chelmsford": "Essex",
+            "Uttlesford": "Essex",
+            "Braintree": "Essex",
+            "Colchester": "Essex",
+            "Tendring": "Essex",
+            "Gosport": "Hampshire",
+            "Fareham": "Hampshire",
+            "Winchester": "Hampshire",
+            "Havant": "Hampshire",
+            "East Hampshire": "Hampshire",
+            "Hart": "Hampshire",
+            "Rushmoor": "Hampshire",
+            "Basingstoke and Deane": "Hampshire",
+            "Test Valley": "Hampshire",
+            "Eastleigh": "Hampshire",
+            "New Forest": "Hampshire",
+            "Three Rivers": "Hertfordshire",
+            "Watford": "Hertfordshire",
+            "Hertsmere": "Hertfordshire",
+            "Welwyn Hatfield": "Hertfordshire",
+            "Broxbourne": "Hertfordshire",
+            "East Hertfordshire": "Hertfordshire",
+            "Stevenage": "Hertfordshire",
+            "North Hertfordshire": "Hertfordshire",
+            "St Albans": "Hertfordshire",
+            "Dacorum": "Hertfordshire",
+            "Dartford": "Kent",
+            "Gravesham": "Kent",
+            "Sevenoaks": "Kent",
+            "Tonbridge and Malling": "Kent",
+            "Tunbridge Wells": "Kent",
+            "Maidstone": "Kent",
+            "Swale": "Kent",
+            "Ashford": "Kent",
+            "Shepway": "Kent",
+            "Canterbury": "Kent",
+            "Dover": "Kent",
+            "Thanet": "Kent",
+            "Oxford": "Oxfordshire",
+            "Cherwell": "Oxfordshire",
+            "South Oxfordshire": "Oxfordshire",
+            "Vale of White Horse": "Oxfordshire",
+            "West Oxfordshire": "Oxfordshire",
+            "Spelthorne": "Surrey",
+            "Runnymede": "Surrey",
+            "Surrey Heath": "Surrey",
+            "Woking": "Surrey",
+            "Elmbridge": "Surrey",
+            "Guildford": "Surrey",
+            "Waverley": "Surrey",
+            "Mole Valley": "Surrey",
+            "Epsom and Ewell": "Surrey",
+            "Reigate and Banstead": "Surrey",
+            "Tandridge": "Surrey",
+            "Worthing": "West Sussex",
+            "Arun": "West Sussex",
+            "Chichester": "West Sussex",
+            "Horsham": "West Sussex",
+            "Crawley": "West Sussex",
+            "Mid Sussex": "West Sussex",
+            "Adur": "West Sussex",
+        };
+        const cases_archive = {
+            "2020-03-05": {"Barking and Dagenham": 0,"Barnet": 3,"Barnsley": 2,"Bath and North East Somerset": 0,"Bedford": 0,"Bexley": 0,"Birmingham": 1,"Blackburn with Darwen": 0,"Blackpool": 0,"Bolton": 1,"Bournemouth": 0,"Bracknell Forest": 0,"Bradford": 1,"Brent": 0,"Brighton and Hove": 6,"Bristol, City of": 0,"Bromley": 1,"Buckinghamshire": 0,"Bury": 4,"Calderdale": 0,"Cambridgeshire": 0,"Camden": 2,"Central Bedfordshire": 0,"Cheshire East": 0,"Cheshire West and Chester": 0,"Cornwall and Isles of Scilly": 2,"County Durham": 0,"Coventry": 0,"Croydon": 0,"Cumbria": 0,"Darlington": 0,"Derby": 0,"Derbyshire": 3,"Devon": 7,"Doncaster": 0,"Dorset": 0,"Dudley": 0,"Ealing": 4,"East Riding of Yorkshire": 0,"East Sussex": 0,"Enfield": 0,"Essex": 3,"Gateshead": 0,"Gloucestershire": 3,"Greenwich": 0,"Hackney and City of London": 0,"Halton": 0,"Hammersmith and Fulham": 0,"Hampshire": 2,"Haringey": 0,"Harrow": 1,"Hartlepool": 0,"Havering": 0,"Herefordshire, County of": 0,"Hertfordshire": 5,"Hillingdon": 0,"Hounslow": 3,"Isle of Wight": 0,"Islington": 0,"Kensington and Chelsea": 4,"Kent": 2,"Kingston upon Hull, City of": 1,"Kingston upon Thames": 1,"Kirklees": 0,"Knowsley": 0,"Lambeth": 0,"Lancashire": 2,"Leeds": 3,"Leicester": 0,"Leicestershire": 0,"Lewisham": 2,"Lincolnshire": 1,"Liverpool": 0,"Luton": 0,"Manchester": 4,"Medway": 0,"Merton": 1,"Middlesbrough": 0,"Milton Keynes": 0,"Newcastle upon Tyne": 3,"Newham": 0,"Norfolk": 0,"North East Lincolnshire": 0,"North Lincolnshire": 0,"North Somerset": 0,"North Tyneside": 0,"North Yorkshire": 0,"Northamptonshire": 2,"Northumberland": 0,"Nottingham": 2,"Nottinghamshire": 0,"Oldham": 2,"Oxfordshire": 4,"Peterborough": 1,"Plymouth": 0,"Poole": 0,"Portsmouth": 0,"Reading": 0,"Redbridge": 0,"Redcar and Cleveland": 0,"Richmond upon Thames": 0,"Rochdale": 0,"Rotherham": 0,"Rutland": 0,"Salford": 0,"Sandwell": 0,"Sefton": 0,"Sheffield": 0,"Shropshire": 0,"Slough": 0,"Solihull": 0,"Somerset": 1,"South Gloucestershire": 0,"South Tyneside": 0,"Southampton": 0,"Southend-on-Sea": 0,"Southwark": 1,"St. Helens": 0,"Staffordshire": 4,"Stockport": 0,"Stockton-on-Tees": 0,"Stoke-on-Trent": 0,"Suffolk": 0,"Sunderland": 0,"Surrey": 4,"Sutton": 0,"Swindon": 0,"Tameside": 0,"Telford and Wrekin": 0,"Thurrock": 0,"Torbay": 4,"Tower Hamlets": 0,"Trafford": 4,"Wakefield": 0,"Walsall": 0,"Waltham Forest": 0,"Wandsworth": 2,"Warrington": 0,"Warwickshire": 0,"West Berkshire": 0,"West Sussex": 3,"Westminster": 0,"Wigan": 3,"Wiltshire": 3,"Windsor and Maidenhead": 0,"Wirral": 1,"Wokingham": 2,"Wolverhampton": 0,"Worcestershire": 0,"York": 3,"awaiting clarification": 8},
+            "2020-03-07": {"Barking and Dagenham": 0,"Barnet": 3,"Barnsley": 2,"Bath and North East Somerset": 0,"Bedford": 0,"Bexley": 0,"Birmingham": 1,"Blackburn with Darwen": 0,"Blackpool": 0,"Bolton": 1,"Bournemouth": 0,"Bracknell Forest": 2,"Bradford": 1,"Brent": 1,"Brighton and Hove": 7,"Bristol, City of": 1,"Bromley": 1,"Buckinghamshire": 1,"Bury": 4,"Calderdale": 0,"Cambridgeshire": 0,"Camden": 2,"Central Bedfordshire": 0,"Cheshire East": 0,"Cheshire West and Chester": 0,"Cornwall and Isles of Scilly": 2,"County Durham": 0,"Coventry": 1,"Croydon": 0,"Cumbria": 4,"Darlington": 0,"Derby": 0,"Derbyshire": 3,"Devon": 10,"Doncaster": 0,"Dorset": 0,"Dudley": 0,"Ealing": 5,"East Riding of Yorkshire": 0,"East Sussex": 0,"Enfield": 0,"Essex": 3,"Gateshead": 0,"Gloucestershire": 3,"Greenwich": 0,"Hackney and City of London": 2,"Halton": 0,"Hammersmith and Fulham": 1,"Hampshire": 2,"Haringey": 0,"Harrow": 1,"Hartlepool": 0,"Havering": 0,"Herefordshire, County of": 0,"Hertfordshire": 8,"Hillingdon": 1,"Hounslow": 3,"Isle of Wight": 1,"Islington": 0,"Kensington and Chelsea": 6,"Kent": 2,"Kingston upon Hull, City of": 1,"Kingston upon Thames": 1,"Kirklees": 0,"Knowsley": 0,"Lambeth": 2,"Lancashire": 2,"Leeds": 3,"Leicester": 0,"Leicestershire": 1,"Lewisham": 2,"Lincolnshire": 1,"Liverpool": 3,"Luton": 2,"Manchester": 5,"Medway": 2,"Merton": 1,"Middlesbrough": 0,"Milton Keynes": 1,"Newcastle upon Tyne": 3,"Newham": 0,"Norfolk": 0,"North East Lincolnshire": 0,"North Lincolnshire": 0,"North Somerset": 0,"North Tyneside": 1,"North Yorkshire": 0,"Northamptonshire": 2,"Northumberland": 0,"Nottingham": 2,"Nottinghamshire": 3,"Oldham": 2,"Oxfordshire": 4,"Peterborough": 1,"Plymouth": 0,"Poole": 0,"Portsmouth": 0,"Reading": 0,"Redbridge": 1,"Redcar and Cleveland": 0,"Richmond upon Thames": 0,"Rochdale": 0,"Rotherham": 0,"Rutland": 0,"Salford": 0,"Sandwell": 0,"Sefton": 0,"Sheffield": 0,"Shropshire": 0,"Slough": 0,"Solihull": 0,"Somerset": 1,"South Gloucestershire": 0,"South Tyneside": 0,"Southampton": 0,"Southend-on-Sea": 1,"Southwark": 1,"St. Helens": 0,"Staffordshire": 4,"Stockport": 0,"Stockton-on-Tees": 0,"Stoke-on-Trent": 0,"Suffolk": 0,"Sunderland": 0,"Surrey": 4,"Sutton": 0,"Swindon": 1,"Tameside": 0,"Telford and Wrekin": 0,"Thurrock": 0,"Torbay": 4,"Tower Hamlets": 0,"Trafford": 4,"Wakefield": 0,"Walsall": 0,"Waltham Forest": 0,"Wandsworth": 2,"Warrington": 0,"Warwickshire": 0,"West Berkshire": 0,"West Sussex": 3,"Westminster": 2,"Wigan": 3,"Wiltshire": 3,"Windsor and Maidenhead": 0,"Wirral": 1,"Wokingham": 2,"Wolverhampton": 0,"Worcestershire": 0,"York": 3,"awaiting clarification": 14},
+        }
+
+        let cases = {"Barking and Dagenham": 0,"Barnet": 3,"Barnsley": 2,"Bath and North East Somerset": 0,"Bedford": 0,"Bexley": 0,"Birmingham": 1,"Blackburn with Darwen": 0,"Blackpool": 0,"Bolton": 1,"Bournemouth": 0,"Bracknell Forest": 2,"Bradford": 1,"Brent": 1,"Brighton and Hove": 7,"Bristol, City of": 1,"Bromley": 1,"Buckinghamshire": 1,"Bury": 4,"Calderdale": 0,"Cambridgeshire": 0,"Camden": 2,"Central Bedfordshire": 0,"Cheshire East": 0,"Cheshire West and Chester": 0,"Cornwall and Isles of Scilly": 2,"County Durham": 0,"Coventry": 1,"Croydon": 0,"Cumbria": 4,"Darlington": 0,"Derby": 0,"Derbyshire": 3,"Devon": 10,"Doncaster": 0,"Dorset": 0,"Dudley": 0,"Ealing": 5,"East Riding of Yorkshire": 0,"East Sussex": 0,"Enfield": 0,"Essex": 3,"Gateshead": 0,"Gloucestershire": 3,"Greenwich": 0,"Hackney and City of London": 2,"Halton": 0,"Hammersmith and Fulham": 1,"Hampshire": 2,"Haringey": 0,"Harrow": 1,"Hartlepool": 0,"Havering": 0,"Herefordshire, County of": 0,"Hertfordshire": 8,"Hillingdon": 1,"Hounslow": 3,"Isle of Wight": 1,"Islington": 0,"Kensington and Chelsea": 6,"Kent": 2,"Kingston upon Hull, City of": 1,"Kingston upon Thames": 1,"Kirklees": 0,"Knowsley": 0,"Lambeth": 2,"Lancashire": 2,"Leeds": 3,"Leicester": 0,"Leicestershire": 1,"Lewisham": 2,"Lincolnshire": 1,"Liverpool": 3,"Luton": 2,"Manchester": 5,"Medway": 2,"Merton": 1,"Middlesbrough": 0,"Milton Keynes": 1,"Newcastle upon Tyne": 3,"Newham": 0,"Norfolk": 0,"North East Lincolnshire": 0,"North Lincolnshire": 0,"North Somerset": 0,"North Tyneside": 1,"North Yorkshire": 0,"Northamptonshire": 2,"Northumberland": 0,"Nottingham": 2,"Nottinghamshire": 3,"Oldham": 2,"Oxfordshire": 4,"Peterborough": 1,"Plymouth": 0,"Poole": 0,"Portsmouth": 0,"Reading": 0,"Redbridge": 1,"Redcar and Cleveland": 0,"Richmond upon Thames": 0,"Rochdale": 0,"Rotherham": 0,"Rutland": 0,"Salford": 0,"Sandwell": 0,"Sefton": 0,"Sheffield": 0,"Shropshire": 0,"Slough": 0,"Solihull": 0,"Somerset": 1,"South Gloucestershire": 0,"South Tyneside": 0,"Southampton": 0,"Southend-on-Sea": 1,"Southwark": 1,"St. Helens": 0,"Staffordshire": 4,"Stockport": 0,"Stockton-on-Tees": 0,"Stoke-on-Trent": 0,"Suffolk": 0,"Sunderland": 0,"Surrey": 4,"Sutton": 0,"Swindon": 1,"Tameside": 0,"Telford and Wrekin": 0,"Thurrock": 0,"Torbay": 4,"Tower Hamlets": 0,"Trafford": 4,"Wakefield": 0,"Walsall": 0,"Waltham Forest": 0,"Wandsworth": 2,"Warrington": 0,"Warwickshire": 0,"West Berkshire": 0,"West Sussex": 3,"Westminster": 2,"Wigan": 3,"Wiltshire": 3,"Windsor and Maidenhead": 0,"Wirral": 1,"Wokingham": 2,"Wolverhampton": 0,"Worcestershire": 0,"York": 3,"awaiting clarification": 14}
+
+
+        function getInfoFromLAD(lad){
+            data = {
+                "name": undefined,
+                "cases": undefined,
+                "newCases": undefined,
+            };
+            if(cases[lad] != undefined){
+                data.name = lad;
+            } else if(cases[places[lad]]!= undefined){
+                data.name = places[lad];
+            } else {
+                console.log("Missing Place! LAD = " + lad);
+            }
+            data.cases = cases_archive[today][data.name];
+            data.newCases = data.cases - cases_archive[yesterday][data.name];
+
+            data.caseSeries = [];
+            case_list = Object.values(cases_archive);
+            for(var i = 0; i < case_list.length; i++){
+                data.caseSeries.push(case_list[i][data.name]);
+            }
+            console.log(data.caseSeries);
+
+            data.color = getColor(data.cases);
+            return data;
+        }
+
+        function getColor(number){
+            return number > 32 ? '#800026' :
+            number > 16  ? '#BD0026' :
+            number > 8  ? '#E31A1C' :
+            number > 4  ? '#FC4E2A' :
+            number > 2   ? '#FD8D3C' :
+            number > 1   ? '#FEB24C' :
+            number > 0   ? '#FED976' :
+                            '#FFFFFF';
+
+        }
+
+
+        var mymap = L.map('mapid').setView([51.505, -0.09], 11);
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            maxZoom: 18,
+            id: 'mapbox/streets-v11',
+            tileSize: 512,
+            zoomOffset: -1,
+            accessToken: 'pk.eyJ1IjoiYnJhbmRvbmphY2tzb24iLCJhIjoiY2s3aTFuYXZwMGY0ODNubW45d24yMGUxMiJ9.ruZUCY7P0KzZYhzDU_aQRg'
+        }).addTo(mymap);
+
+        function style(feature) {
+            return {
+                fillColor: getInfoFromLAD(feature.properties.LAD13NM)["color"],
+                weight: 2,
+                opacity: 1,
+                color: 'white',
+                dashArray: '3',
+                fillOpacity: 0.7
+            };
+        }
+
+        function highlightFeature(e) {
+            var layer = e.target;
+
+            layer.setStyle({
+                weight: 5,
+                color: '#666',
+                dashArray: '',
+                fillOpacity: 0.7
+            });
+
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+
+            info.update(layer.feature.properties);
+        }
+
+        function resetHighlight(e) {
+
+            e.target.setStyle({
+                weight: 2,
+                color: '#FFF',
+                dashArray: '3',
+                fillOpacity: 0.7
+            });
+
+            info.update();
+
+        }
+
+
+        function onEachFeature(feature, layer) {
+            layer.on({
+                mouseover: highlightFeature,
+                mouseout: resetHighlight
+            });
+        }
+
+        L.geoJson(counties, {
+            style: style,
+            onEachFeature: onEachFeature
+        }).addTo(mymap);
+
+        var info = L.control();
+
+        info.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+
+        // method that we will use to update the control based on feature properties passed
+        info.update = function (props) {
+            
+            this._div.innerHTML = '<h4>Coronavirus Cases</h4>';
+            if(props){
+                let data = getInfoFromLAD(props.LAD13NM);
+                this._div.innerHTML += '<b>' + data.name + '</b><br />' + data.cases + ' people';
+                if(data.newCases > 0){
+                    this._div.innerHTML += "<span style='color: red;'> (+" + data.newCases + " today)</span>";
+                }
+                this._div.innerHTML += "<br /><svg class='sparkline' width='100' height='30' stroke-width='3'></svg>";
+                sparkline.sparkline(document.querySelector(".sparkline"), data.caseSeries);
+            } else {
+                this._div.innerHTML +='Hover over a region';
+            }
+        };
+
+        info.addTo(mymap);
+
+        var legend = L.control({position: 'bottomright'});
+
+        legend.onAdd = function (map) {
+
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 1, 2, 4, 8, 16, 32],
+                labels = [];
+
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColor(grades[i]+1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+
+            return div;
+        };
+
+        legend.addTo(mymap);
+
+
+        </script>
+        
+</body>
+</html>
