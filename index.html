@@ -6,7 +6,7 @@ body{
     font-family: Arial, Helvetica, sans-serif;
 }
 #mapid {
-    height: 600px;
+    height: 80%;
 }
 .info {
     padding: 6px 8px;
@@ -48,8 +48,9 @@ body{
 <title>Coronavirus in London</title>
 </head>
 <body>
-    <div id="mapid"></div>
+    <h1>COVID-19 London Case Tracker</h1>
     <p>Case data from <a href="https://www.gov.uk/government/publications/coronavirus-covid-19-number-of-cases-in-england/coronavirus-covid-19-number-of-cases-in-england">Public Health England</a>, last updated 2020-03-07 at 0900</p>
+    <div id="mapid"></div>
     <script>
 
         const today = "2020-03-07";
@@ -170,7 +171,6 @@ body{
             for(var i = 0; i < case_list.length; i++){
                 data.caseSeries.push(case_list[i][data.name]);
             }
-            console.log(data.caseSeries);
 
             data.color = getColor(data.cases);
             return data;
