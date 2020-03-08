@@ -167,6 +167,8 @@
             "Westminster",
         ];
 
+        // taken from here
+        // https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationestimatesforukenglandandwalesscotlandandnorthernireland
         const london_populations = {
             "Barking and Dagenham": 211998,
             "Barnet": 392140,
@@ -374,9 +376,9 @@
 
         function updateTotals(){
             document.querySelector("#inner_london_total .total_number").innerHTML = totals["Inner London"].total;
-            sparkline.sparkline(document.querySelector("#inner_london_total .sparkline"), totals["Inner London"].series);
+            sparkline.sparkline(document.querySelector("#inner_london_total .sparkline"), totals["Inner London"].series, { interactive: true });
             document.querySelector("#greater_london_total .total_number").innerHTML = totals["Greater London"].total;
-            sparkline.sparkline(document.querySelector("#greater_london_total .sparkline"), totals["Greater London"].series);
+            sparkline.sparkline(document.querySelector("#greater_london_total .sparkline"), totals["Greater London"].series, { interactive: true });
             document.querySelector("#england_total .total_number").innerHTML = totals["England"].total;
             sparkline.sparkline(document.querySelector("#england_total .sparkline"), totals["England"].series, { interactive: true });
         }
