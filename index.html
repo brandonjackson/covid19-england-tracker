@@ -265,8 +265,6 @@
                 data.caseSeries.push(case_list[i][data.name]);
             }
 
-            console.log(lad);
-            console.log(data.name);
             data.rate = data.cases / place_data[data.name].population;
 
             data.color = getColor(data.cases);
@@ -655,18 +653,6 @@
         }
 
         generatePointsInBorough(20, "Hackney and City of London");
-
-        let place_names = Object.keys(place_data);
-        let place_areas = {}
-        for(var i = 0; i < place_names.length; i++){
-            console.log(place_names[i]);
-            let box = getBoroughGeoJSON(place_names[i]);
-            console.log(box);
-            place_areas[place_names[i]] = Math.round(turf.area(box) / 1000000);
-        }
-        console.log(JSON.stringify(Object.values(place_areas)));
-
-
 
         </script>
 
