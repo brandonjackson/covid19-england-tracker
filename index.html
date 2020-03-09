@@ -268,7 +268,7 @@
 
             data.rate = data.cases / place_data[data.name].population;
 
-            data.color = getColor(data.cases);
+            data.color = getColor(data.rate);
             return data;
         }
 
@@ -400,15 +400,27 @@
         calculateAllTotals();
 
         function getColor(number){
-            return number > 32 ? '#800026' :
-            number > 16  ? '#BD0026' :
-            number > 8  ? '#E31A1C' :
-            number > 4  ? '#FC4E2A' :
-            number > 2   ? '#FD8D3C' :
-            number > 1   ? '#FEB24C' :
-            number > 0   ? '#FED976' :
-                            '#FFFFFF';
-
+            scheme = "rate";
+            
+            if(scheme == "cases"){
+                return number > 32 ? '#800026' :
+                number > 16  ? '#BD0026' :
+                number > 8  ? '#E31A1C' :
+                number > 4  ? '#FC4E2A' :
+                number > 2   ? '#FD8D3C' :
+                number > 1   ? '#FEB24C' :
+                number > 0   ? '#FED976' :
+                                '#FFFFFF';
+            } else {
+                return number > 0.00006 ? '#800026' :
+                number > 0.00005  ? '#BD0026' :
+                number > 0.00004  ? '#E31A1C' :
+                number > 0.00003  ? '#FC4E2A' :
+                number > 0.00002   ? '#FD8D3C' :
+                number > 0.00001   ? '#FEB24C' :
+                number > 0   ? '#FED976' :
+                                '#FFFFFF';
+            }
         }
 
         var primarymap = L.map('primarymap').setView([51.505, -0.09], 10);
@@ -498,7 +510,7 @@
                     this._div.innerHTML += "<span style='color: red;'> (▲" + data.newCases + ")</span>";
                 }
                 if(data.rate != undefined){
-                    this._div.innerHTML += "<br/>" + (data.rate * 100).toFixed(3) + '% of population';
+                    this._div.innerHTML += "<br/>" + (data.rate * 100).toFixed(4) + '% of population';
                 }
 
                 sparkline.sparkline(document.querySelector(".info .sparkline"), data.caseSeries);
@@ -514,14 +526,20 @@
         legend.onAdd = function (map) {
 
             var div = L.DomUtil.create('div', 'info legend'),
-                grades = [0, 1, 2, 4, 8, 16, 32],
+                // grades = [0, 1, 2, 4, 8, 16, 32],
+                grades = [0, 0.00001, 0.00002, 0.00003, 0.00004, 0.00005, 0.00006],
                 labels = [];
 
             // loop through our density intervals and generate a label with a colored square for each interval
             for (var i = 0; i < grades.length; i++) {
                 div.innerHTML +=
-                    '<i style="background:' + getColor(grades[i]+1) + '"></i> ' +
-                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+                    '<i style="background:' + getColor(grades[i]) + '"></i> ' +
+                    grades[i]*100 +'%' + (grades[i + 1] ? '<br>' : '+');
+
+                // used for generating ranges...we just need the single values right now
+                // div.innerHTML +=
+                //     '<i style="background:' + getColor(grades[i]) + '"></i> ' +
+                //     grades[i]*100 +'%' + (grades[i + 1] ? '&ndash;' + grades[i + 1] * 100 + '%<br>' : '+');
             }
 
             return div;
