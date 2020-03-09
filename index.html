@@ -82,16 +82,162 @@
         const today = "2020-03-08";
         const yesterday = "2020-03-07";
 
-        const places = {
-            "Hackney": "Hackney and City of London",
-            "City of London": "Hackney and City of London",
-            "Cornwall": "Cornwall and Isles of Scilly",
-            "Isles of Scilly": "Cornwall and Isles of Scilly",
-        };
         const cases_archive = {
             "2020-03-05": {"Barking and Dagenham": 0,"Barnet": 3,"Barnsley": 2,"Bath and North East Somerset": 0,"Bedford": 0,"Bexley": 0,"Birmingham": 1,"Blackburn with Darwen": 0,"Blackpool": 0,"Bolton": 1,"Bournemouth, Christchurch and Poole": 0,"Bracknell Forest": 0,"Bradford": 1,"Brent": 0,"Brighton and Hove": 6,"Bristol, City of": 0,"Bromley": 1,"Buckinghamshire": 0,"Bury": 4,"Calderdale": 0,"Cambridgeshire": 0,"Camden": 2,"Central Bedfordshire": 0,"Cheshire East": 0,"Cheshire West and Chester": 0,"Cornwall and Isles of Scilly": 2,"County Durham": 0,"Coventry": 0,"Croydon": 0,"Cumbria": 0,"Darlington": 0,"Derby": 0,"Derbyshire": 3,"Devon": 7,"Doncaster": 0,"Dorset": 0,"Dudley": 0,"Ealing": 4,"East Riding of Yorkshire": 0,"East Sussex": 0,"Enfield": 0,"Essex": 3,"Gateshead": 0,"Gloucestershire": 3,"Greenwich": 0,"Hackney and City of London": 0,"Halton": 0,"Hammersmith and Fulham": 0,"Hampshire": 2,"Haringey": 0,"Harrow": 1,"Hartlepool": 0,"Havering": 0,"Herefordshire, County of": 0,"Hertfordshire": 5,"Hillingdon": 0,"Hounslow": 3,"Isle of Wight": 0,"Islington": 0,"Kensington and Chelsea": 4,"Kent": 2,"Kingston upon Hull, City of": 1,"Kingston upon Thames": 1,"Kirklees": 0,"Knowsley": 0,"Lambeth": 0,"Lancashire": 2,"Leeds": 3,"Leicester": 0,"Leicestershire": 0,"Lewisham": 2,"Lincolnshire": 1,"Liverpool": 0,"Luton": 0,"Manchester": 4,"Medway": 0,"Merton": 1,"Middlesbrough": 0,"Milton Keynes": 0,"Newcastle upon Tyne": 3,"Newham": 0,"Norfolk": 0,"North East Lincolnshire": 0,"North Lincolnshire": 0,"North Somerset": 0,"North Tyneside": 0,"North Yorkshire": 0,"Northamptonshire": 2,"Northumberland": 0,"Nottingham": 2,"Nottinghamshire": 0,"Oldham": 2,"Oxfordshire": 4,"Peterborough": 1,"Plymouth": 0,"Portsmouth": 0,"Reading": 0,"Redbridge": 0,"Redcar and Cleveland": 0,"Richmond upon Thames": 0,"Rochdale": 0,"Rotherham": 0,"Rutland": 0,"Salford": 0,"Sandwell": 0,"Sefton": 0,"Sheffield": 0,"Shropshire": 0,"Slough": 0,"Solihull": 0,"Somerset": 1,"South Gloucestershire": 0,"South Tyneside": 0,"Southampton": 0,"Southend-on-Sea": 0,"Southwark": 1,"St. Helens": 0,"Staffordshire": 4,"Stockport": 0,"Stockton-on-Tees": 0,"Stoke-on-Trent": 0,"Suffolk": 0,"Sunderland": 0,"Surrey": 4,"Sutton": 0,"Swindon": 0,"Tameside": 0,"Telford and Wrekin": 0,"Thurrock": 0,"Torbay": 4,"Tower Hamlets": 0,"Trafford": 4,"Wakefield": 0,"Walsall": 0,"Waltham Forest": 0,"Wandsworth": 2,"Warrington": 0,"Warwickshire": 0,"West Berkshire": 0,"West Sussex": 3,"Westminster": 0,"Wigan": 3,"Wiltshire": 3,"Windsor and Maidenhead": 0,"Wirral": 1,"Wokingham": 2,"Wolverhampton": 0,"Worcestershire": 0,"York": 3,"awaiting clarification": 8},
             "2020-03-07": {"Barking and Dagenham": 0,"Barnet": 3,"Barnsley": 2,"Bath and North East Somerset": 0,"Bedford": 0,"Bexley": 0,"Birmingham": 1,"Blackburn with Darwen": 0,"Blackpool": 0,"Bolton": 1,"Bournemouth, Christchurch and Poole": 0,"Bracknell Forest": 2,"Bradford": 1,"Brent": 1,"Brighton and Hove": 7,"Bristol, City of": 1,"Bromley": 1,"Buckinghamshire": 1,"Bury": 4,"Calderdale": 0,"Cambridgeshire": 0,"Camden": 2,"Central Bedfordshire": 0,"Cheshire East": 0,"Cheshire West and Chester": 0,"Cornwall and Isles of Scilly": 2,"County Durham": 0,"Coventry": 1,"Croydon": 0,"Cumbria": 4,"Darlington": 0,"Derby": 0,"Derbyshire": 3,"Devon": 10,"Doncaster": 0,"Dorset": 0,"Dudley": 0,"Ealing": 5,"East Riding of Yorkshire": 0,"East Sussex": 0,"Enfield": 0,"Essex": 3,"Gateshead": 0,"Gloucestershire": 3,"Greenwich": 0,"Hackney and City of London": 2,"Halton": 0,"Hammersmith and Fulham": 1,"Hampshire": 2,"Haringey": 0,"Harrow": 1,"Hartlepool": 0,"Havering": 0,"Herefordshire, County of": 0,"Hertfordshire": 8,"Hillingdon": 1,"Hounslow": 3,"Isle of Wight": 1,"Islington": 0,"Kensington and Chelsea": 6,"Kent": 2,"Kingston upon Hull, City of": 1,"Kingston upon Thames": 1,"Kirklees": 0,"Knowsley": 0,"Lambeth": 2,"Lancashire": 2,"Leeds": 3,"Leicester": 0,"Leicestershire": 1,"Lewisham": 2,"Lincolnshire": 1,"Liverpool": 3,"Luton": 2,"Manchester": 5,"Medway": 2,"Merton": 1,"Middlesbrough": 0,"Milton Keynes": 1,"Newcastle upon Tyne": 3,"Newham": 0,"Norfolk": 0,"North East Lincolnshire": 0,"North Lincolnshire": 0,"North Somerset": 0,"North Tyneside": 1,"North Yorkshire": 0,"Northamptonshire": 2,"Northumberland": 0,"Nottingham": 2,"Nottinghamshire": 3,"Oldham": 2,"Oxfordshire": 4,"Peterborough": 1,"Plymouth": 0,"Portsmouth": 0,"Reading": 0,"Redbridge": 1,"Redcar and Cleveland": 0,"Richmond upon Thames": 0,"Rochdale": 0,"Rotherham": 0,"Rutland": 0,"Salford": 0,"Sandwell": 0,"Sefton": 0,"Sheffield": 0,"Shropshire": 0,"Slough": 0,"Solihull": 0,"Somerset": 1,"South Gloucestershire": 0,"South Tyneside": 0,"Southampton": 0,"Southend-on-Sea": 1,"Southwark": 1,"St. Helens": 0,"Staffordshire": 4,"Stockport": 0,"Stockton-on-Tees": 0,"Stoke-on-Trent": 0,"Suffolk": 0,"Sunderland": 0,"Surrey": 4,"Sutton": 0,"Swindon": 1,"Tameside": 0,"Telford and Wrekin": 0,"Thurrock": 0,"Torbay": 4,"Tower Hamlets": 0,"Trafford": 4,"Wakefield": 0,"Walsall": 0,"Waltham Forest": 0,"Wandsworth": 2,"Warrington": 0,"Warwickshire": 0,"West Berkshire": 0,"West Sussex": 3,"Westminster": 2,"Wigan": 3,"Wiltshire": 3,"Windsor and Maidenhead": 0,"Wirral": 1,"Wokingham": 2,"Wolverhampton": 0,"Worcestershire": 0,"York": 3,"awaiting clarification": 14},
             "2020-03-08": {"Barking and Dagenham": 0,"Barnet": 4,"Barnsley": 2,"Bath and North East Somerset": 0,"Bedford": 0,"Bexley": 0,"Birmingham": 1,"Blackburn with Darwen": 0,"Blackpool": 0,"Bolton": 2,"Bournemouth, Christchurch and Poole": 2,"Bracknell Forest": 2,"Bradford": 1,"Brent": 3,"Brighton and Hove": 7,"Bristol, City of": 2,"Bromley": 1,"Buckinghamshire": 1,"Bury": 3,"Calderdale": 0,"Cambridgeshire": 0,"Camden": 2,"Central Bedfordshire": 0,"Cheshire East": 0,"Cheshire West and Chester": 0,"Cornwall and Isles of Scilly": 3,"County Durham": 0,"Coventry": 3,"Croydon": 0,"Cumbria": 5,"Darlington": 0,"Derby": 0,"Derbyshire": 4,"Devon": 12,"Doncaster": 0,"Dorset": 0,"Dudley": 0,"Ealing": 5,"East Riding of Yorkshire": 0,"East Sussex": 0,"Enfield": 0,"Essex": 5,"Gateshead": 0,"Gloucestershire": 3,"Greenwich": 0,"Hackney and City of London": 2,"Halton": 0,"Hammersmith and Fulham": 2,"Hampshire": 8,"Haringey": 0,"Harrow": 1,"Hartlepool": 0,"Havering": 0,"Herefordshire, County of": 0,"Hertfordshire": 13,"Hillingdon": 1,"Hounslow": 3,"Isle of Wight": 1,"Islington": 0,"Kensington and Chelsea": 8,"Kent": 4,"Kingston upon Hull, City of": 1,"Kingston upon Thames": 1,"Kirklees": 0,"Knowsley": 0,"Lambeth": 3,"Lancashire": 4,"Leeds": 3,"Leicester": 0,"Leicestershire": 1,"Lewisham": 3,"Lincolnshire": 1,"Liverpool": 4,"Luton": 2,"Manchester": 5,"Medway": 2,"Merton": 1,"Middlesbrough": 0,"Milton Keynes": 1,"Newcastle upon Tyne": 3,"Newham": 0,"Norfolk": 0,"North East Lincolnshire": 0,"North Lincolnshire": 0,"North Somerset": 0,"North Tyneside": 1,"North Yorkshire": 0,"Northamptonshire": 4,"Northumberland": 0,"Nottingham": 2,"Nottinghamshire": 3,"Oldham": 2,"Oxfordshire": 5,"Peterborough": 1,"Plymouth": 0,"Portsmouth": 0,"Reading": 0,"Redbridge": 1,"Redcar and Cleveland": 0,"Richmond upon Thames": 0,"Rochdale": 0,"Rotherham": 0,"Rutland": 0,"Salford": 0,"Sandwell": 0,"Sefton": 0,"Sheffield": 0,"Shropshire": 0,"Slough": 0,"Solihull": 0,"Somerset": 2,"South Gloucestershire": 0,"South Tyneside": 0,"Southampton": 0,"Southend-on-Sea": 1,"Southwark": 3,"St. Helens": 0,"Staffordshire": 4,"Stockport": 0,"Stockton-on-Tees": 0,"Stoke-on-Trent": 0,"Suffolk": 0,"Sunderland": 0,"Surrey": 5,"Sutton": 0,"Swindon": 2,"Tameside": 1,"Telford and Wrekin": 0,"Thurrock": 0,"Torbay": 6,"Tower Hamlets": 1,"Trafford": 4,"Wakefield": 0,"Walsall": 0,"Waltham Forest": 0,"Wandsworth": 3,"Warrington": 0,"Warwickshire": 3,"West Berkshire": 0,"West Sussex": 3,"Westminster": 3,"Wigan": 3,"Wiltshire": 3,"Windsor and Maidenhead": 0,"Wirral": 1,"Wokingham": 3,"Wolverhampton": 0,"Worcestershire": 0,"York": 3,"Awaiting confirmation": 20,}
+        }
+
+        const place_data = {
+            "Barking and Dagenham": { "population": 211998, "area": 36, "type": "Greater London" },
+            "Barnet": { "population": 392140, "area": 87, "type": "Greater London" },
+            "Barnsley": { "population": 245199, "area": 328, "type": "Metropolitan District" },
+            "Bath and North East Somerset": { "population": 192106, "area": 350, "type": "Unitary Authority" },
+            "Bedford": { "population": 171623, "area": 475, "type": "Unitary Authority" },
+            "Bexley": { "population": 247258, "area": 61, "type": "Greater London" },
+            "Birmingham": { "population": 1141374, "area": 267, "type": "Metropolitan District" },
+            "Blackburn with Darwen": { "population": 148942, "area": 137, "type": "Unitary Authority" },
+            "Blackpool": { "population": 139305, "area": 35, "type": "Unitary Authority" },
+            "Bolton": { "population": 285372, "area": 140, "type": "Metropolitan District" },
+            "Bournemouth, Christchurch and Poole": { "population": 395784, "area": 111, "type": "Unitary Authority" },
+            "Bracknell Forest": { "population": 121676, "area": 109, "type": "Unitary Authority" },
+            "Bradford": { "population": 537173, "area": 367, "type": "Metropolitan District" },
+            "Brent": { "population": 330795, "area": 43, "type": "Greater London" },
+            "Brighton and Hove": { "population": 290395, "area": 83, "type": "Unitary Authority" },
+            "Bristol, City of": { "population": 463405, "area": 110, "type": "Unitary Authority" },
+            "Bromley": { "population": 331096, "area": 150, "type": "Greater London" },
+            "Buckinghamshire": { "population": 540059, "area": 1564, "type": "County" },
+            "Bury": { "population": 190108, "area": 100, "type": "Metropolitan District" },
+            "Calderdale": { "population": 210082, "area": 363, "type": "Metropolitan District" },
+            "Cambridgeshire": { "population": 651482, "area": 3052, "type": "County" },
+            "Camden": { "population": 262226, "area": 21, "type": "Inner London" },
+            "Central Bedfordshire": { "population": 283606, "area": 715, "type": "Unitary Authority" },
+            "Cheshire East": { "population": 380790, "area": 1167, "type": "Unitary Authority" },
+            "Cheshire West and Chester": { "population": 340502, "area": 913, "type": "Unitary Authority" },
+            "Cornwall and Isles of Scilly": { "population": 565968, "area": 3562, "type": "Unitary Authority" },
+            "County Durham": { "population": 526980, "area": 2229, "type": "Unitary Authority" },
+            "Coventry": { "population": 366785, "area": 98, "type": "Metropolitan District" },
+            "Croydon": { "population": 385346, "area": 87, "type": "Greater London" },
+            "Cumbria": { "population": 498888, "area": 6810, "type": "County" },
+            "Darlington": { "population": 106566, "area": 197, "type": "Unitary Authority" },
+            "Derby": { "population": 257174, "area": 79, "type": "Unitary Authority" },
+            "Derbyshire": { "population": 796142, "area": 2547, "type": "County" },
+            "Devon": { "population": 795286, "area": 6560, "type": "County" },
+            "Doncaster": { "population": 310542, "area": 568, "type": "Metropolitan District" },
+            "Dorset": { "population": 376484, "area": 2543, "type": "Unitary Authority" },
+            "Dudley": { "population": 320626, "area": 97, "type": "Metropolitan District" },
+            "Ealing": { "population": 341982, "area": 55, "type": "Greater London" },
+            "East Riding of Yorkshire": { "population": 339614, "area": 2403, "type": "Unitary Authority" },
+            "East Sussex": { "population": 554590, "area": 1713, "type": "County" },
+            "Enfield": { "population": 333869, "area": 82, "type": "Greater London" },
+            "Essex": { "population": 1477764, "area": 3462, "type": "County" },
+            "Gateshead": { "population": 202508, "area": 143, "type": "Metropolitan District" },
+            "Gloucestershire": { "population": 633558, "area": 2651, "type": "County" },
+            "Greenwich": { "population": 286186, "area": 47, "type": "Inner London" },
+            "Hackney and City of London": { "population": 288371, "area": 22, "type": "Inner London" },
+            "Halton": { "population": 128432, "area": 79, "type": "Unitary Authority" },
+            "Hammersmith and Fulham": { "population": 185426, "area": 17, "type": "Inner London" },
+            "Hampshire": { "population": 1376316, "area": 3678, "type": "County" },
+            "Haringey": { "population": 270624, "area": 30, "type": "Greater London" },
+            "Harrow": { "population": 250149, "area": 50, "type": "Greater London" },
+            "Hartlepool": { "population": 93242, "area": 94, "type": "Unitary Authority" },
+            "Havering": { "population": 257810, "area": 112, "type": "Greater London" },
+            "Herefordshire, County of": { "population": 192107, "area": 2178, "type": "Unitary Authority" },
+            "Hertfordshire": { "population": 1184365, "area": 1643, "type": "County" },
+            "Hillingdon": { "population": 304824, "area": 116, "type": "Greater London" },
+            "Hounslow": { "population": 270782, "area": 57, "type": "Greater London" },
+            "Isle of Wight": { "population": 141538, "area": 380, "type": "Unitary Authority" },
+            "Islington": { "population": 239142, "area": 15, "type": "Inner London" },
+            "Kensington and Chelsea": { "population": 156197, "area": 12, "type": "Inner London" },
+            "Kent": { "population": 1568623, "area": 3736, "type": "County" },
+            "Kingston upon Hull, City of": { "population": 260645, "area": 71, "type": "Unitary Authority" },
+            "Kingston upon Thames": { "population": 175470, "area": 37, "type": "Greater London" },
+            "Kirklees": { "population": 438727, "area": 408, "type": "Metropolitan District" },
+            "Knowsley": { "population": 149571, "area": 87, "type": "Metropolitan District" },
+            "Lambeth": { "population": 325917, "area": 27, "type": "Inner London" },
+            "Lancashire": { "population": 1210053, "area": 2896, "type": "County" },
+            "Leeds": { "population": 789194, "area": 551, "type": "Metropolitan District" },
+            "Leicester": { "population": 355218, "area": 73, "type": "Unitary Authority" },
+            "Leicestershire": { "population": 698268, "area": 2081, "type": "County" },
+            "Lewisham": { "population": 303536, "area": 35, "type": "Inner London" },
+            "Lincolnshire": { "population": 755833, "area": 5928, "type": "County" },
+            "Liverpool": { "population": 494814, "area": 111, "type": "Metropolitan District" },
+            "Luton": { "population": 214109, "area": 44, "type": "Unitary Authority" },
+            "Manchester": { "population": 547627, "area": 116, "type": "Metropolitan District" },
+            "Medway": { "population": 277855, "area": 194, "type": "Unitary Authority" },
+            "Merton": { "population": 206186, "area": 37, "type": "Greater London" },
+            "Middlesbrough": { "population": 140545, "area": 54, "type": "Unitary Authority" },
+            "Milton Keynes": { "population": 268607, "area": 308, "type": "Unitary Authority" },
+            "Newcastle upon Tyne": { "population": 300196, "area": 114, "type": "Metropolitan District" },
+            "Newham": { "population": 352005, "area": 36, "type": "Greater London" },
+            "Norfolk": { "population": 903680, "area": 5371, "type": "County" },
+            "North East Lincolnshire": { "population": 159821, "area": 191, "type": "Unitary Authority" },
+            "North Lincolnshire": { "population": 172005, "area": 846, "type": "Unitary Authority" },
+            "North Somerset": { "population": 213919, "area": 374, "type": "Unitary Authority" },
+            "North Tyneside": { "population": 205985, "area": 82, "type": "Metropolitan District" },
+            "North Yorkshire": { "population": 614505, "area": 8654, "type": "County" },
+            "Northamptonshire": { "population": 747622, "area": 2365, "type": "County" },
+            "Northumberland": { "population": 320274, "area": 5019, "type": "Unitary Authority" },
+            "Nottingham": { "population": 331069, "area": 75, "type": "Unitary Authority" },
+            "Nottinghamshire": { "population": 823126, "area": 2084, "type": "County" },
+            "Oldham": { "population": 235623, "area": 142, "type": "Metropolitan District" },
+            "Oxfordshire": { "population": 687524, "area": 2604, "type": "County" },
+            "Peterborough": { "population": 201041, "area": 344, "type": "Unitary Authority" },
+            "Plymouth": { "population": 263100, "area": 80, "type": "Unitary Authority" },
+            "Portsmouth": { "population": 215133, "area": 41, "type": "Unitary Authority" },
+            "Reading": { "population": 163203, "area": 40, "type": "Unitary Authority" },
+            "Redbridge": { "population": 303858, "area": 56, "type": "Greater London" },
+            "Redcar and Cleveland": { "population": 136718, "area": 244, "type": "Unitary Authority" },
+            "Richmond upon Thames": { "population": 196904, "area": 58, "type": "Greater London" },
+            "Rochdale": { "population": 220001, "area": 158, "type": "Metropolitan District" },
+            "Rotherham": { "population": 264671, "area": 287, "type": "Metropolitan District" },
+            "Rutland": { "population": 39697, "area": 394, "type": "Unitary Authority" },
+            "Salford": { "population": 254408, "area": 97, "type": "Metropolitan District" },
+            "Sandwell": { "population": 327378, "area": 85, "type": "Metropolitan District" },
+            "Sefton": { "population": 275396, "area": 153, "type": "Metropolitan District" },
+            "Sheffield": { "population": 582506, "area": 367, "type": "Metropolitan District" },
+            "Shropshire": { "population": 320274, "area": 3193, "type": "Unitary Authority" },
+            "Slough": { "population": 149112, "area": 32, "type": "Unitary Authority" },
+            "Solihull": { "population": 214909, "area": 178, "type": "Metropolitan District" },
+            "Somerset": { "population": 559399, "area": 3451, "type": "County" },
+            "South Gloucestershire": { "population": 282644, "area": 496, "type": "Unitary Authority" },
+            "South Tyneside": { "population": 150265, "area": 65, "type": "Metropolitan District" },
+            "Southampton": { "population": 252796, "area": 50, "type": "Unitary Authority" },
+            "Southend-on-Sea": { "population": 182463, "area": 42, "type": "Unitary Authority" },
+            "Southwark": { "population": 317256, "area": 29, "type": "Inner London" },
+            "St. Helens": { "population": 180049, "area": 135, "type": "Metropolitan District" },
+            "Staffordshire": { "population": 875219, "area": 2623, "type": "County" },
+            "Stockport": { "population": 291775, "area": 126, "type": "Metropolitan District" },
+            "Stockton-on-Tees": { "population": 197213, "area": 204, "type": "Unitary Authority" },
+            "Stoke-on-Trent": { "population": 255833, "area": 93, "type": "Unitary Authority" },
+            "Suffolk": { "population": 758556, "area": 3794, "type": "County" },
+            "Sunderland": { "population": 277417, "area": 138, "type": "Metropolitan District" },
+            "Surrey": { "population": 1189934, "area": 1669, "type": "County" },
+            "Sutton": { "population": 204525, "area": 44, "type": "Greater London" },
+            "Swindon": { "population": 221996, "area": 230, "type": "Unitary Authority" },
+            "Tameside": { "population": 225197, "area": 103, "type": "Metropolitan District" },
+            "Telford and Wrekin": { "population": 177799, "area": 289, "type": "Unitary Authority" },
+            "Thurrock": { "population": 172525, "area": 162, "type": "Unitary Authority" },
+            "Torbay": { "population": 135780, "area": 63, "type": "Unitary Authority" },
+            "Tower Hamlets": { "population": 317705, "area": 20, "type": "Inner London" },
+            "Trafford": { "population": 236370, "area": 106, "type": "Metropolitan District" },
+            "Wakefield": { "population": 345038, "area": 339, "type": "Metropolitan District" },
+            "Walsall": { "population": 283378, "area": 105, "type": "Metropolitan District" },
+            "Waltham Forest": { "population": 276700, "area": 39, "type": "Greater London" },
+            "Wandsworth": { "population": 326474, "area": 35, "type": "Inner London" },
+            "Warrington": { "population": 209547, "area": 181, "type": "Unitary Authority" },
+            "Warwickshire": { "population": 571010, "area": 1975, "type": "County" },
+            "West Berkshire": { "population": 158527, "area": 702, "type": "Unitary Authority" },
+            "West Sussex": { "population": 858852, "area": 1991, "type": "County" },
+            "Westminster": { "population": 255324, "area": 22, "type": "Inner London" },
+            "Wigan": { "population": 326088, "area": 187, "type": "Metropolitan District" },
+            "Wiltshire": { "population": 498064, "area": 3253, "type": "Unitary Authority" },
+            "Windsor and Maidenhead": { "population": 150906, "area": 197, "type": "Unitary Authority" },
+            "Wirral": { "population": 323235, "area": 158, "type": "Metropolitan District" },
+            "Wokingham": { "population": 167979, "area": 180, "type": "Unitary Authority" },
+            "Wolverhampton": { "population": 262008, "area": 69, "type": "Metropolitan District" },
+            "Worcestershire": { "population": 592057, "area": 1740, "type": "County" },
+            "York": { "population": 209893, "area": 272, "type": "Unitary Authority" },
         }
 
         function getInfoFromLAD(lad){
@@ -104,8 +250,6 @@
             cases = cases_archive[today];
             if(cases[lad] != undefined){
                 data.name = lad;
-            } else if(cases[places[lad]]!= undefined){
-                data.name = places[lad];
             } else {
                 console.log("Missing Place! LAD = " + lad);
             }
@@ -121,9 +265,9 @@
                 data.caseSeries.push(case_list[i][data.name]);
             }
 
-            if(london_populations[data.name] != undefined){
-                data.rate = data.cases / london_populations[data.name];
-            }
+            console.log(lad);
+            console.log(data.name);
+            data.rate = data.cases / place_data[data.name].population;
 
             data.color = getColor(data.cases);
             return data;
@@ -446,9 +590,6 @@
         for(var i = 0; i < greater_london.length; i++){
 
             var borough = greater_london[i];
-            if(borough=="Hackney and City of London"){
-                borough = "Hackney"
-            }
             // create new option element
             var opt = document.createElement('option');
             opt.appendChild(document.createTextNode(borough));
@@ -484,9 +625,6 @@
             if(borough_geojson != null){
                 bbox = turf.bbox(borough_geojson);
                 let cases = cases_archive[today][borough];
-                if(cases===undefined){
-                    cases = cases_archive[today][places[borough]];
-                }
                 let points = generatePointsInBorough(cases, borough);
                 
                 local_geojson.clearLayers();
@@ -516,8 +654,17 @@
             return turf.featureCollection(points);
         }
 
-        generatePointsInBorough(20, "Hackney");
+        generatePointsInBorough(20, "Hackney and City of London");
 
+        let place_names = Object.keys(place_data);
+        let place_areas = {}
+        for(var i = 0; i < place_names.length; i++){
+            console.log(place_names[i]);
+            let box = getBoroughGeoJSON(place_names[i]);
+            console.log(box);
+            place_areas[place_names[i]] = Math.round(turf.area(box) / 1000000);
+        }
+        console.log(JSON.stringify(Object.values(place_areas)));
 
 
 
