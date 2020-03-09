@@ -526,9 +526,10 @@
         legend.onAdd = function (map) {
 
             var div = L.DomUtil.create('div', 'info legend'),
-                // grades = [0, 1, 2, 4, 8, 16, 32],
-                grades = [0, 0.00001, 0.00002, 0.00003, 0.00004, 0.00005, 0.00006],
-                labels = [];
+            
+            // grades = [0, 1, 2, 4, 8, 16, 32],
+            grades = [0, 0.00001, 0.00002, 0.00003, 0.00004, 0.00005, 0.00006],
+            labels = [];
 
             // loop through our density intervals and generate a label with a colored square for each interval
             for (var i = 0; i < grades.length; i++) {
