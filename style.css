@@ -4,7 +4,7 @@ html, body { height: 100% }
     margin-top: 20px;
 }
 
-#mapid {
+#primarymap, #localmap {
     width: 100%;
     height: 480px;
 }
