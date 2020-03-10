@@ -717,11 +717,12 @@
             let fifteenminwalk_regions = [];
             for(var i = 0; i < counties.features.length; i++){
                 if(counties.features[i].geometry.type != "Polygon"){
-                    console.log("Skipping " + counties.features[i].properties.ctyua15nm)
+                    // console.log("Skipping " + counties.features[i].properties.ctyua15nm)
                     continue;
                 }
-                console.log(counties.features[i].properties.ctyua15nm)
-                if(turf.booleanOverlap(counties.features[i], fifteenminwalk)){
+                if(turf.booleanPointInPolygon(center, counties.features[i])){
+                    fifteenminwalk_regions.push(counties.features[i].properties.ctyua15nm);
+                } else if(turf.booleanOverlap(counties.features[i], fifteenminwalk)){
                     fifteenminwalk_regions.push(counties.features[i].properties.ctyua15nm);
                 }
             }
