@@ -46,7 +46,7 @@
                 </div>
             </div>
             <div class="col-lg col-xl">
-                <h5>Map</h5>
+                <h5>Map of <select id="primaryMapVariable"><option value="populationRate">% of Population With COVID-19</option><option value="cases">Total Cases</option><option value="newCases">New Cases</option><option value="areaRate">Cases Per Square Kilometer</option></select></h5>
                 <div id="primarymap"></div>
                 <p>Data from <a href="https://www.gov.uk/government/publications/coronavirus-covid-19-number-of-cases-in-england/coronavirus-covid-19-number-of-cases-in-england">Public Health England</a>, accurate as of 2020-03-09 at 0900</p>        
                 <br />
@@ -55,7 +55,6 @@
                 <p><b><span id="borough_total">0</span></b> cases have been confirmed in <b><span id="borough_name">Hackney</span></b>.</p>
                 <p>We don't have data about where exactly the cases are. Here is a simulation of what that number of cases might look like spread <em>randomly</em> across the borough.</p>
                 <div id="localmap"></div>
-
             </div>
             <div class="col-md-3 col-lg-3 col-xl-3 ">
                 <h5>New Cases in London</h5>
@@ -89,6 +88,8 @@
             "2020-03-09": {"Barking and Dagenham": 0,"Barnet": 5,"Barnsley": 2,"Bath and North East Somerset": 0,"Bedford": 0,"Bexley": 0,"Birmingham": 1,"Blackburn with Darwen": 0,"Blackpool": 0,"Bolton": 3,"Bournemouth, Christchurch and Poole": 2,"Bracknell Forest": 2,"Bradford": 1,"Brent": 3,"Brighton and Hove": 8,"Bristol, City of": 2,"Bromley": 1,"Buckinghamshire": 1,"Bury": 3,"Calderdale": 0,"Cambridgeshire": 0,"Camden": 4,"Central Bedfordshire": 0,"Cheshire East": 0,"Cheshire West and Chester": 0,"Cornwall and Isles of Scilly": 4,"County Durham": 0,"Coventry": 2,"Croydon": 0,"Cumbria": 5,"Darlington": 0,"Derby": 0,"Derbyshire": 4,"Devon": 12,"Doncaster": 0,"Dorset": 0,"Dudley": 1,"Ealing": 5,"East Riding of Yorkshire": 0,"East Sussex": 0,"Enfield": 1,"Essex": 5,"Gateshead": 0,"Gloucestershire": 3,"Greenwich": 0,"Hackney and City of London": 2,"Halton": 0,"Hammersmith and Fulham": 2,"Hampshire": 8,"Haringey": 0,"Harrow": 1,"Hartlepool": 0,"Havering": 2,"Herefordshire, County of": 0,"Hertfordshire": 13,"Hillingdon": 1,"Hounslow": 3,"Isle of Wight": 1,"Islington": 0,"Kensington and Chelsea": 8,"Kent": 4,"Kingston upon Hull, City of": 1,"Kingston upon Thames": 1,"Kirklees": 0,"Knowsley": 0,"Lambeth": 3,"Lancashire": 4,"Leeds": 5,"Leicester": 0,"Leicestershire": 2,"Lewisham": 3,"Lincolnshire": 1,"Liverpool": 5,"Luton": 2,"Manchester": 5,"Medway": 2,"Merton": 1,"Middlesbrough": 0,"Milton Keynes": 1,"Newcastle upon Tyne": 4,"Newham": 0,"Norfolk": 0,"North East Lincolnshire": 0,"North Lincolnshire": 0,"North Somerset": 0,"North Tyneside": 1,"North Yorkshire": 0,"Northamptonshire": 4,"Northumberland": 0,"Nottingham": 2,"Nottinghamshire": 5,"Oldham": 4,"Oxfordshire": 5,"Peterborough": 1,"Plymouth": 0,"Portsmouth": 0,"Reading": 0,"Redbridge": 1,"Redcar and Cleveland": 0,"Richmond upon Thames": 0,"Rochdale": 0,"Rotherham": 0,"Rutland": 0,"Salford": 0,"Sandwell": 0,"Sefton": 0,"Sheffield": 0,"Shropshire": 0,"Slough": 0,"Solihull": 0,"Somerset": 2,"South Gloucestershire": 0,"South Tyneside": 0,"Southampton": 0,"Southend-on-Sea": 1,"Southwark": 5,"St. Helens": 0,"Staffordshire": 4,"Stockport": 0,"Stockton-on-Tees": 0,"Stoke-on-Trent": 0,"Suffolk": 1,"Sunderland": 1,"Surrey": 6,"Sutton": 1,"Swindon": 2,"Tameside": 1,"Telford and Wrekin": 0,"Thurrock": 0,"Torbay": 7,"Tower Hamlets": 1,"Trafford": 4,"Wakefield": 0,"Walsall": 0,"Waltham Forest": 1,"Wandsworth": 3,"Warrington": 0,"Warwickshire": 4,"West Berkshire": 0,"West Sussex": 3,"Westminster": 3,"Wigan": 3,"Wiltshire": 3,"Windsor and Maidenhead": 0,"Wirral": 1,"Wokingham": 3,"Wolverhampton": 2,"Worcestershire": 0,"York": 3,"Awaiting confirmation": 26,}
         }
 
+        // Population Data Source:
+        // https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationestimatesforukenglandandwalesscotlandandnorthernireland
         const place_data = {
             "Barking and Dagenham": { "population": 211998, "area": 36, "type": "Greater London" },
             "Barnet": { "population": 392140, "area": 87, "type": "Greater London" },
@@ -241,37 +242,102 @@
             "York": { "population": 209893, "area": 272, "type": "Unitary Authority" },
         }
 
-        function getInfoFromLAD(lad){
-            data = {
-                "name": undefined,
-                "cases": undefined,
-                "newCases": undefined,
-                "rate": undefined,
-            };
-            cases = cases_archive[today];
-            if(cases[lad] != undefined){
-                data.name = lad;
-            } else {
-                console.log("Missing Place! LAD = " + lad);
-            }
-            data.cases = cases_archive[today][data.name];
-            if(cases_archive[yesterday] != undefined){
-                data.newCases = data.cases - cases_archive[yesterday][data.name];
-            }
-            
+        function generateData(cases){
+            let data = {};
+            const dates = Object.keys(cases);
+            const yesterday = dates[dates.length - 2];
+            const today = dates[dates.length - 1];
+            for(const place in place_data){
+                let region = {}
 
-            data.caseSeries = [];
-            case_list = Object.values(cases_archive);
-            for(var i = 0; i < case_list.length; i++){
-                data.caseSeries.push(case_list[i][data.name]);
+                // Place Basics
+                region.name = place;
+                region.population = place_data[place].population;
+                region.area = place_data[place].area;
+                region.type = place_data[place].type;
+
+                // Case Data
+                region.cases = cases[today][place];
+                region.newCases = 0;
+                if(cases[yesterday] != undefined){
+                    region.newCases = region.cases - cases[yesterday][place];
+                } else { 
+                    region.newCases = region.cases;
+                }
+                region.caseSeries = [];
+                case_list = Object.values(cases);
+                for(var i = 0; i < case_list.length; i++){
+                    region.caseSeries.push(case_list[i][place]);
+                }
+
+                // Stats
+                region.populationRate = region.cases / region.population;
+                region.areaRate = region.cases / region.area;
+
+                // Save to the list
+                data[place] = region;
             }
-
-            data.rate = data.cases / place_data[data.name].population;
-
-            data.color = getColor(data.rate);
             return data;
         }
+        let data = generateData(cases_archive);
 
+        function setPrimaryMapData(data, variable){
+
+            const breaks = {
+                'cases': [0, 1, 2, 4, 8, 16, 32],
+                'newCases': [0, 1, 2, 4, 8, 16, 32],
+                'populationRate': [0, 0.00001, 0.00002, 0.00003, 0.00004, 0.00005, 0.00006],
+                'areaRate': [0, 0.01, 0.1, 0.5, 1, 2, 3]
+            }
+
+            function calculateColor(number){
+                return number > breaks[variable][6] ? '#800026' :
+                    number > breaks[variable][5]  ? '#BD0026' :
+                    number > breaks[variable][4]  ? '#E31A1C' :
+                    number > breaks[variable][3]  ? '#FC4E2A' :
+                    number > breaks[variable][2]   ? '#FD8D3C' :
+                    number > breaks[variable][1]   ? '#FEB24C' :
+                    number > breaks[variable][0]   ? '#FED976' :
+                                    '#FFFFFF';
+            }
+            
+            primaryMapGeoJSON.setStyle(function(feature){
+                return {
+                    fillColor: calculateColor(data[feature.properties.ctyua15nm][variable]),
+                    weight: 2,
+                    opacity: 1,
+                    color: 'white',
+                    dashArray: '',
+                    fillOpacity: 0.7
+                }
+            });
+
+            let legend = document.querySelector('.legend');
+            legend.innerHTML = "";
+            labels = [];
+        
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < breaks[variable].length; i++) {
+
+                if(variable=="populationRate"){
+                    legend.innerHTML +=
+                    '<i style="background:' + (calculateColor(breaks[variable][i]*1.000001)) + '"></i> ' +
+                    breaks[variable][i]*100 +'%' + (breaks[variable][i + 1] ? '<br>' : '+');
+                } else if(variable == "areaRate"){
+                    legend.innerHTML +=
+                        '<i style="background:' + calculateColor(breaks[variable][i]) + '"></i> ' +
+                        breaks[variable][i] + (breaks[variable][i + 1] ? '&ndash;' + (breaks[variable][i + 1]*0.99) + '<br>' : '+');
+
+                } else if(variable=="cases" || variable == "newCases"){
+                    // used for generating ranges...we just need the single values right now
+                    legend.innerHTML +=
+                        '<i style="background:' + calculateColor(breaks[variable][i]) + '"></i> ' +
+                        breaks[variable][i] + (breaks[variable][i + 1] ? '&ndash;' + (breaks[variable][i + 1] - 0.01) + '<br>' : '+');
+                }
+
+                    
+            }
+        }
 
         const inner_london = [
             "Camden",
@@ -322,44 +388,6 @@
             "Westminster",
         ];
 
-        // taken from here
-        // https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationestimatesforukenglandandwalesscotlandandnorthernireland
-        const london_populations = {
-            "Barking and Dagenham": 211998,
-            "Barnet": 392140,
-            "Bexley": 247258,
-            "Brent": 330795,
-            "Bromley": 331096,
-            "Camden": 262226,
-            "Croydon": 385346,
-            "Ealing": 341982,
-            "Enfield": 333869,
-            "Greater London": 8908081,
-            "Greenwich": 286186,
-            "Hackney and City of London": 288371,
-            "Hammersmith and Fulham": 185426,
-            "Haringey": 270624,
-            "Harrow": 250149,
-            "Havering": 257810,
-            "Hillingdon": 304824,
-            "Hounslow": 270782,
-            "Inner London": 3263760,
-            "Islington": 239142,
-            "Kensington and Chelsea": 156197,
-            "Kingston upon Thames": 175470,
-            "Lambeth": 325917,
-            "Lewisham": 303536,
-            "Merton": 206186,
-            "Newham": 352005,
-            "Redbridge": 303858,
-            "Richmond upon Thames": 196904,
-            "Southwark": 317256,
-            "Sutton": 204525,
-            "Tower Hamlets": 317705,
-            "Waltham Forest": 276700,
-            "Wandsworth": 326474,
-            "Westminster": 255324
-        }
 
         function getTotalCases(region, date){
 
@@ -399,29 +427,6 @@
         }
         calculateAllTotals();
 
-        function getColor(number){
-            scheme = "rate";
-            
-            if(scheme == "cases"){
-                return number > 32 ? '#800026' :
-                number > 16  ? '#BD0026' :
-                number > 8  ? '#E31A1C' :
-                number > 4  ? '#FC4E2A' :
-                number > 2   ? '#FD8D3C' :
-                number > 1   ? '#FEB24C' :
-                number > 0   ? '#FED976' :
-                                '#FFFFFF';
-            } else {
-                return number > 0.00006 ? '#800026' :
-                number > 0.00005  ? '#BD0026' :
-                number > 0.00004  ? '#E31A1C' :
-                number > 0.00003  ? '#FC4E2A' :
-                number > 0.00002   ? '#FD8D3C' :
-                number > 0.00001   ? '#FEB24C' :
-                number > 0   ? '#FED976' :
-                                '#FFFFFF';
-            }
-        }
 
         var primarymap = L.map('primarymap').setView([51.505, -0.09], 10);
         L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
@@ -432,17 +437,6 @@
             zoomOffset: -1,
             accessToken: 'pk.eyJ1IjoiYnJhbmRvbmphY2tzb24iLCJhIjoiY2s3aTFuYXZwMGY0ODNubW45d24yMGUxMiJ9.ruZUCY7P0KzZYhzDU_aQRg'
         }).addTo(primarymap);
-
-        function style(feature) {
-            return {
-                fillColor: getInfoFromLAD(feature.properties.ctyua15nm)["color"],
-                weight: 2,
-                opacity: 1,
-                color: 'white',
-                dashArray: '',
-                fillOpacity: 0.7
-            };
-        }
 
         function highlightFeature(e) {
             var layer = e.target;
@@ -462,18 +456,14 @@
         }
 
         function resetHighlight(e) {
-
             e.target.setStyle({
                 weight: 2,
                 color: '#FFF',
                 dashArray: '',
                 fillOpacity: 0.7
             });
-
             info.update();
-
         }
-
 
         function onEachFeature(feature, layer) {
             layer.on({
@@ -483,70 +473,67 @@
             });
         }
 
-        L.geoJson(counties, {
-            style: style,
+        let primaryMapGeoJSON = L.geoJson(counties, {
+            style: function(feature) {
+                return {
+                    fillColor: '#FFF',
+                    weight: 2,
+                    opacity: 1,
+                    color: 'white',
+                    dashArray: '',
+                    fillOpacity: 0.1
+                };
+            },
             onEachFeature: onEachFeature
         }).addTo(primarymap);
 
+        // Info Box
         var info = L.control();
-
         info.onAdd = function (map) {
-            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this._div = L.DomUtil.create('div', 'info');
             this.update();
             return this._div;
         };
-
-        // method that we will use to update the control based on feature properties passed
         info.update = function (props) {
-            
             this._div.innerHTML = '';
             if(props){
-                let data = getInfoFromLAD(props.ctyua15nm);
-                this._div.innerHTML += '<h5>' + data.name + '</h5>';
+                let region = data[props.ctyua15nm];
+                this._div.innerHTML += '<h5>' + region.name + '</h5>';
                 this._div.innerHTML += "<svg class='sparkline' width='100' height='30' stroke-width='3'></svg>";
-
-                this._div.innerHTML += "<br/>" + data.cases + ' cases';
-                if(data.newCases > 0){
-                    this._div.innerHTML += "<span style='color: red;'> (▲" + data.newCases + ")</span>";
+                this._div.innerHTML += "<br/>" + region.cases + ' cases';
+                if(region.newCases > 0){
+                    this._div.innerHTML += "<span style='color: red;'> (▲" + region.newCases + ")</span>";
                 }
-                if(data.rate != undefined){
-                    this._div.innerHTML += "<br/>" + (data.rate * 100).toFixed(4) + '% of population';
+                if(region.populationRate != undefined){
+                    this._div.innerHTML += "<br/>" + (region.populationRate * 100).toFixed(4) + '% of population';
+                }
+                if(region.areaRate != undefined){
+                    this._div.innerHTML += "<br/>" + region.areaRate.toFixed(3) + ' cases per square kilometer';
                 }
 
-                sparkline.sparkline(document.querySelector(".info .sparkline"), data.caseSeries);
+
+
+                sparkline.sparkline(document.querySelector(".info .sparkline"), region.caseSeries);
             } else {
                 this._div.innerHTML +='Hover over a region';
             }
         };
-
         info.addTo(primarymap);
 
+        // Create Legend
         var legend = L.control({position: 'bottomright'});
-
         legend.onAdd = function (map) {
-
-            var div = L.DomUtil.create('div', 'info legend'),
-            
-            // grades = [0, 1, 2, 4, 8, 16, 32],
-            grades = [0, 0.00001, 0.00002, 0.00003, 0.00004, 0.00005, 0.00006],
-            labels = [];
-
-            // loop through our density intervals and generate a label with a colored square for each interval
-            for (var i = 0; i < grades.length; i++) {
-                div.innerHTML +=
-                    '<i style="background:' + getColor(grades[i]) + '"></i> ' +
-                    grades[i]*100 +'%' + (grades[i + 1] ? '<br>' : '+');
-
-                // used for generating ranges...we just need the single values right now
-                // div.innerHTML +=
-                //     '<i style="background:' + getColor(grades[i]) + '"></i> ' +
-                //     grades[i]*100 +'%' + (grades[i + 1] ? '&ndash;' + grades[i + 1] * 100 + '%<br>' : '+');
-            }
-
+            var div = L.DomUtil.create('div', 'info legend');
+            // add the rest of the stuff when we add data to the map
             return div;
         };
-
         legend.addTo(primarymap);
+
+        setPrimaryMapData(data, "populationRate");
+
+        document.querySelector('#primaryMapVariable').addEventListener('change', (event)=>{
+            setPrimaryMapData(data, event.target.value)
+        });
 
         function updateTotals(){
             document.querySelector("#inner_london_total .total_number").innerHTML = totals["Inner London"].total;
@@ -560,8 +547,8 @@
         function generateNewCasesTable(){
             var sortable = []
             for(var i = 0; i < greater_london.length; i++){
-                let data = getInfoFromLAD(greater_london[i]);
-                sortable.push([greater_london[i],data.newCases,data.cases]);
+                let region = data[greater_london[i]];
+                sortable.push([greater_london[i],region.newCases, region.cases]);
             }
             sortable.sort(function(a, b){
                 return b[1] - a[1]
@@ -569,16 +556,15 @@
 
             var table = document.getElementById("new_cases");
             for(var i = 0; i < sortable.length; i++){
-                var row = table.insertRow();
-                var cell1 = row.insertCell(0);
-                var cell2 = row.insertCell(1);
-                var cell3 = row.insertCell(2);
-                cell1.innerHTML = sortable[i][0];
                 if(sortable[i][1] > 0){
+                    var row = table.insertRow();
+                    var cell1 = row.insertCell(0);
+                    var cell2 = row.insertCell(1);
+                    var cell3 = row.insertCell(2);
+                    cell1.innerHTML = sortable[i][0];
                     cell2.innerHTML =  "▲ " + sortable[i][1];
+                    cell3.innerHTML =  sortable[i][2];
                 }
-
-                cell3.innerHTML =  sortable[i][2];
             }
         }
 
