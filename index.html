@@ -45,31 +45,52 @@
                     <p class="total_location">England</p class="total_location">
                 </div>
             </div>
-            <div class="col-lg col-xl">
+            <div class="col-lg col-xl col-md">
                 <h5>Map of <select id="primaryMapVariable"><option value="populationRate">% of Population With COVID-19</option><option value="cases">Total Cases</option><option value="newCases">New Cases</option><option value="areaRate">Cases Per Square Kilometer</option></select></h5>
                 <div id="primarymap"></div>
-                <p>Data from <a href="https://www.gov.uk/government/publications/coronavirus-covid-19-number-of-cases-in-england/coronavirus-covid-19-number-of-cases-in-england">Public Health England</a>, accurate as of 2020-03-09 at 0900</p>        
+                <p><small>Data from <a href="https://www.gov.uk/government/publications/coronavirus-covid-19-number-of-cases-in-england/coronavirus-covid-19-number-of-cases-in-england">Public Health England</a>. Shows situation as of 2020-03-09 at 0900. New data released every afternoon / evening.</small></p>        
                 <br />
-                <h5>London Boroughs</h5>
+                <!-- <h5>London Boroughs</h5>
                 <select id="borough-picker"></select>
                 <p><b><span id="borough_total">0</span></b> cases have been confirmed in <b><span id="borough_name">Hackney</span></b>.</p>
                 <p>We don't have data about where exactly the cases are. Here is a simulation of what that number of cases might look like spread <em>randomly</em> across the borough.</p>
-                <div id="localmap"></div>
+                <div id="localmap"></div> -->
             </div>
             <div class="col-md-3 col-lg-3 col-xl-3 ">
-                <h5>New Cases in London</h5>
-                <table class="table" id="new_cases">
-                    <thead>
-                        <tr>
-                          <th scope="col">Borough</th>
-                          <th scope="col">New</th>
-                          <th scope="col">Total</th>
-                        </tr>
-                      </thead>
-                      <tbody>
 
-                      </tbody>
-                </table>
+                <div class='box'>
+                    <h5>Estimate Cases Nearby</h5>
+                    <form id='estimationForm'>
+                    <div class="input-group mb-3">
+                        
+
+                            <input type='text' class='form-control' placeholder='Enter Postcode Here' id='postcode' aria-describedby="get_estimate" />
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-outline-secondary" id='get_estimate'>Estimate</button>
+                            </div>
+                        
+                    </div>
+                    <div id='estimate'>
+
+                    </div>
+                </form>
+                </div>
+
+                <div class='box'>
+                    <h5>New Cases in London</h5>
+                    <table class="table" id="new_cases">
+                        <thead>
+                            <tr>
+                            <th scope="col">Borough</th>
+                            <th scope="col">New</th>
+                            <th scope="col">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
                 
             </div>
 
@@ -572,43 +593,43 @@
         generateNewCasesTable();
 
 
-        var localmap = L.map('localmap').setView([51.505, -0.09], 10);
-        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-            maxZoom: 18,
-            id: 'mapbox/streets-v11',
-            tileSize: 512,
-            zoomOffset: -1,
-            accessToken: 'pk.eyJ1IjoiYnJhbmRvbmphY2tzb24iLCJhIjoiY2s3aTFuYXZwMGY0ODNubW45d24yMGUxMiJ9.ruZUCY7P0KzZYhzDU_aQRg'
-        }).addTo(localmap);
+        // var localmap = L.map('localmap').setView([51.505, -0.09], 10);
+        // L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+        //     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        //     maxZoom: 18,
+        //     id: 'mapbox/streets-v11',
+        //     tileSize: 512,
+        //     zoomOffset: -1,
+        //     accessToken: 'pk.eyJ1IjoiYnJhbmRvbmphY2tzb24iLCJhIjoiY2s3aTFuYXZwMGY0ODNubW45d24yMGUxMiJ9.ruZUCY7P0KzZYhzDU_aQRg'
+        // }).addTo(localmap);
 
-        let local_geojson = L.geoJson({
-            "type": "FeatureCollection",
-            "features": []
-            }, {}
-        );
-        local_geojson.addTo(localmap);
+        // let local_geojson = L.geoJson({
+        //     "type": "FeatureCollection",
+        //     "features": []
+        //     }, {}
+        // );
+        // local_geojson.addTo(localmap);
 
 
-        let picker = document.getElementById('borough-picker');
-        for(var i = 0; i < greater_london.length; i++){
+        // let picker = document.getElementById('borough-picker');
+        // for(var i = 0; i < greater_london.length; i++){
 
-            var borough = greater_london[i];
-            // create new option element
-            var opt = document.createElement('option');
-            opt.appendChild(document.createTextNode(borough));
-            opt.value = borough; 
-            picker.appendChild(opt); 
-        }
-        picker.addEventListener('change', (event) => {
-            updateLocalMap(event.target.value)
-        });
-        picker.selectedIndex = 17;
-        updateLocalMap(picker.value);
+        //     var borough = greater_london[i];
+        //     // create new option element
+        //     var opt = document.createElement('option');
+        //     opt.appendChild(document.createTextNode(borough));
+        //     opt.value = borough; 
+        //     picker.appendChild(opt); 
+        // }
+        // picker.addEventListener('change', (event) => {
+        //     updateLocalMap(event.target.value)
+        // });
+        // picker.selectedIndex = 17;
+        // updateLocalMap(picker.value);
 
-        setInterval(()=>{
-            updateLocalMap(picker.value);
-        }, 3000);
+        // setInterval(()=>{
+        //     updateLocalMap(picker.value);
+        // }, 3000);
 
 
         function getBoroughGeoJSON(borough_name){
@@ -623,27 +644,27 @@
         }
 
 
-        function updateLocalMap(borough){
+        // function updateLocalMap(borough){
             
-            borough_geojson = getBoroughGeoJSON(borough);
-            if(borough_geojson != null){
-                bbox = turf.bbox(borough_geojson);
-                let cases = cases_archive[today][borough];
-                let points = generatePointsInBorough(cases, borough);
+        //     borough_geojson = getBoroughGeoJSON(borough);
+        //     if(borough_geojson != null){
+        //         bbox = turf.bbox(borough_geojson);
+        //         let cases = cases_archive[today][borough];
+        //         let points = generatePointsInBorough(cases, borough);
                 
-                local_geojson.clearLayers();
-                local_geojson.addData(points);
+        //         local_geojson.clearLayers();
+        //         local_geojson.addData(points);
 
-                document.getElementById('borough_name').innerHTML = borough;
-                document.getElementById('borough_total').innerHTML = cases;
+        //         document.getElementById('borough_name').innerHTML = borough;
+        //         document.getElementById('borough_total').innerHTML = cases;
                 
 
-                localmap.fitBounds([
-                    [bbox[1],bbox[0]],
-                    [bbox[3],bbox[2]]
-                ])
-            }
-        }
+        //         localmap.fitBounds([
+        //             [bbox[1],bbox[0]],
+        //             [bbox[3],bbox[2]]
+        //         ])
+        //     }
+        // }
 
         function generatePointsInBorough(n, borough_name){
             let borough_geojson = getBoroughGeoJSON(borough_name);
@@ -656,6 +677,97 @@
                 }
             }
             return turf.featureCollection(points);
+        }
+
+        let form = document.querySelector('#estimationForm');
+        form.addEventListener('submit', function(e){
+            e.preventDefault();
+            let postcode = document.querySelector("#postcode").value.replace(/\s/g,'');
+            console.log(postcode);
+            fetch('https://api.postcodes.io/postcodes/' + postcode)
+                .then(response => {
+                    console.log(response);
+                    response.json().then(function(data) {
+                        console.log(data.result.latitude)
+                        console.log(data.result.longitude);
+                        let nearby = calculateNearbyCases(data.result.latitude, data.result.longitude);
+                        
+                        let estimate = document.querySelector('#estimate');
+                        estimate.innerHTML = "⚠️ Available data is not specific enough to make reliable predictions. Below is a <em>rough estimate</em> based on what we know: "
+                        estimate.innerHTML += "<ul><li>Between " + (nearby.fiveminwalk / 3).toFixed(1) + " and " + nearby.fiveminwalk.toFixed(1) + " cases within a 5 minute walk</li><li>Between " + (nearby.fifteenminwalk / 3).toFixed(1) + " and " + nearby.fifteenminwalk.toFixed(1) + " cases within a 15 minute walk</li></ul>";
+                        estimate.innerHTML += "Evidence from other cities shows cases of COVID-19 occur in family/household clusters. The range given above assumes number of cases per household varies from 1 to 3.<br /><br />"
+                    });
+                });
+        });
+
+        function calculateNearbyCases(latitude,longitude){
+            N_TRIALS = 10000;
+
+            const center = turf.point([longitude, latitude]);
+            const fiveminwalk = turf.circle(center, 0.4);
+            const fifteenminwalk = turf.circle(center, 1.2);
+
+            let fifteenminwalk_regions = [];
+            for(var i = 0; i < counties.features.length; i++){
+                if(counties.features[i].geometry.type != "Polygon"){
+                    console.log("Skipping " + counties.features[i].properties.ctyua15nm)
+                    continue;
+                }
+                console.log(counties.features[i].properties.ctyua15nm)
+                if(turf.booleanOverlap(counties.features[i], fifteenminwalk)){
+                    fifteenminwalk_regions.push(counties.features[i].properties.ctyua15nm);
+                }
+            }
+            if(fifteenminwalk_regions.length==0){
+                console.warn('No Matching Regions Found');
+            } else {
+                console.log("Matching Regions: ", fifteenminwalk_regions);
+            }
+
+            let fiveminwalk_counts = []
+            let fifteenminwalk_counts = []
+            for(var i = 0; i < N_TRIALS; i++){
+                let points = null;
+                for(var j = 0; j < fifteenminwalk_regions.length; j++){
+                    let borough_points_fc = generatePointsInBorough(data[fifteenminwalk_regions[j]].cases, fifteenminwalk_regions[j])
+                    if(points != null){
+                        let sum_points = borough_points_fc.features.concat(points.features)
+                        points.features = sum_points;
+                    } else {
+                        points = borough_points_fc;
+                    }
+                }
+                let trial_fiveminwalk_count = 0;
+                let trial_fifteenminwalk_count = 0;
+                for(var j = 0; j < points.features.length; j++){
+                    if(turf.booleanPointInPolygon(points.features[j], fiveminwalk)){
+                        trial_fiveminwalk_count += 1;
+                    }
+                    if(turf.booleanPointInPolygon(points.features[j], fifteenminwalk)){
+                        trial_fifteenminwalk_count += 1;
+                    }
+                }
+                fiveminwalk_counts.push(trial_fiveminwalk_count)
+                fifteenminwalk_counts.push(trial_fifteenminwalk_count)
+            }
+
+            return {
+                'fiveminwalk': arrayAverage(fiveminwalk_counts),
+                'fifteenminwalk': arrayAverage(fifteenminwalk_counts)
+            }
+
+        }
+        // calculateNearbyCases(51.523599, -0.116263);
+
+        function arrayAverage(values){
+            let sum = values.reduce((previous, current) => current += previous);
+            return sum / values.length;
+        }
+        function arrayMedian(values){
+            values.sort((a, b) => a - b);
+            let lowMiddle = Math.floor((values.length - 1) / 2);
+            let highMiddle = Math.ceil((values.length - 1) / 2);
+            return (values[lowMiddle] + values[highMiddle]) / 2;
         }
 
         generatePointsInBorough(20, "Hackney and City of London");
