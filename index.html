@@ -48,8 +48,12 @@
             <div class="col-lg col-xl col-md">
                 <h5>Map of <select id="primaryMapVariable"><option value="populationRate">% of Population With COVID-19</option><option value="cases">Total Cases</option><option value="newCases">New Cases</option><option value="areaRate">Cases Per Square Kilometer</option></select></h5>
                 <div id="primarymap"></div>
+                <p><button id="play">Play</button> Date: <span id="timeline_date"></span></p>
                 <p><small>Data from <a href="https://www.gov.uk/government/publications/coronavirus-covid-19-number-of-cases-in-england/coronavirus-covid-19-number-of-cases-in-england">Public Health England</a>. Shows situation as of 2020-03-10 at 0900. New data released every afternoon / evening.</small></p>        
                 <br />
+
+               
+
                 <!-- <h5>London Boroughs</h5>
                 <select id="borough-picker"></select>
                 <p><b><span id="borough_total">0</span></b> cases have been confirmed in <b><span id="borough_name">Hackney</span></b>.</p>
@@ -87,7 +91,7 @@
                             </tr>
                         </thead>
                         <tbody>
-
+    
                         </tbody>
                     </table>
                 </div>
@@ -332,7 +336,7 @@
             primaryMapGeoJSON.setStyle(function(feature){
                 return {
                     fillColor: calculateColor(data[feature.properties.ctyua15nm][variable]),
-                    weight: 2,
+                    weight: 1,
                     opacity: 1,
                     color: 'white',
                     dashArray: '',
@@ -451,6 +455,9 @@
                 for(var j = 0; j < dates.length; j++){
                     totals[places[i]].series.push(getTotalCases(places[i],dates[j]));
                 }
+                let yesterday = totals[places[i]].series[totals[places[i]].series.length - 2]
+                totals[places[i]].newCases = totals[places[i]].total - yesterday;
+                totals[places[i]].percentChange = Math.round((totals[places[i]].newCases / yesterday) * 100);
             }
         }
         calculateAllTotals();
@@ -470,7 +477,7 @@
             var layer = e.target;
 
             layer.setStyle({
-                weight: 5,
+                weight: 2,
                 color: '#666',
                 dashArray: '',
                 fillOpacity: 0.7
@@ -485,7 +492,7 @@
 
         function resetHighlight(e) {
             e.target.setStyle({
-                weight: 2,
+                weight: 1,
                 color: '#FFF',
                 dashArray: '',
                 fillOpacity: 0.7
@@ -505,7 +512,7 @@
             style: function(feature) {
                 return {
                     fillColor: '#FFF',
-                    weight: 2,
+                    weight: 1,
                     opacity: 1,
                     color: 'white',
                     dashArray: '',
@@ -564,11 +571,11 @@
         });
 
         function updateTotals(){
-            document.querySelector("#inner_london_total .total_number").innerHTML = totals["Inner London"].total;
+            document.querySelector("#inner_london_total .total_number").innerHTML = totals["Inner London"].total + "<br/><span class='percentChange'>▲ " + totals["Inner London"].newCases + " (" + totals["Inner London"].percentChange + "%)</span>";
             sparkline.sparkline(document.querySelector("#inner_london_total .sparkline"), totals["Inner London"].series, { interactive: true });
-            document.querySelector("#greater_london_total .total_number").innerHTML = totals["Greater London"].total;
+            document.querySelector("#greater_london_total .total_number").innerHTML = totals["Greater London"].total + "<br/><span class='percentChange'>▲ " + totals["Greater London"].newCases + " (" + totals["Greater London"].percentChange + "%)</span>";
             sparkline.sparkline(document.querySelector("#greater_london_total .sparkline"), totals["Greater London"].series, { interactive: true });
-            document.querySelector("#england_total .total_number").innerHTML = totals["England"].total;
+            document.querySelector("#england_total .total_number").innerHTML = totals["England"].total + "<br /><span class='percentChange'>▲ " + totals["England"].newCases + " (" + totals["England"].percentChange + "%)</span>";
             sparkline.sparkline(document.querySelector("#england_total .sparkline"), totals["England"].series, { interactive: true });
         }
 
@@ -695,14 +702,31 @@
                 .then(response => {
                     console.log(response);
                     response.json().then(function(data) {
-                        console.log(data.result.latitude)
+                        console.log(data.result.latitude);
                         console.log(data.result.longitude);
-                        let nearby = calculateNearbyCases(data.result.latitude, data.result.longitude);
+                        let center = [data.result.latitude, data.result.longitude];
+                        let nearby = calculateNearbyCases(center[0], center[1]);
                         
+                        // Add circles to map
+                        primarymap.setView(center, 13)
+                        L.circle(center, {
+                            weight: 2,
+                            radius: 400,
+                            dashArray: '4 4',
+                            color: '#333',
+                            fillOpacity: 0
+                        }).addTo(primarymap);
+                        L.circle(center, {
+                            weight: 2,
+                            radius: 1200,
+                            dashArray: '4 4',
+                            color: '#333',
+                            fillOpacity: 0
+                        }).addTo(primarymap);
+
                         let estimate = document.querySelector('#estimate');
-                        estimate.innerHTML = "⚠️ Available data is not specific enough to make reliable predictions. Below is a <em>rough estimate</em> based on what we know: "
-                        estimate.innerHTML += "<ul><li>Between " + (nearby.fiveminwalk / 3).toFixed(1) + " and " + nearby.fiveminwalk.toFixed(1) + " cases within a 5 minute walk</li><li>Between " + (nearby.fifteenminwalk / 3).toFixed(1) + " and " + nearby.fifteenminwalk.toFixed(1) + " cases within a 15 minute walk</li></ul>";
-                        estimate.innerHTML += "Evidence from other cities shows cases of COVID-19 occur in family/household clusters. The range given above assumes number of cases per household varies from 1 to 3.<br /><br />"
+                        estimate.innerHTML = "<ul><li>Between " + (nearby.fiveminwalk / 3).toFixed(1) + " and " + nearby.fiveminwalk.toFixed(1) + " cases within a 5 minute walk</li><li>Between " + (nearby.fifteenminwalk / 3).toFixed(1) + " and " + nearby.fifteenminwalk.toFixed(1) + " cases within a 15 minute walk</li></ul>";
+                        estimate.innerHTML += "<small>⚠️ This is a rough estimate. Available data is not specific enough to make reliable predictions. Evidence from other cities shows cases of COVID-19 occur in family/household clusters. The range given above assumes number of cases per household varies from 1 to 3.</small><br /><br />"
                     });
                 });
         });
@@ -778,7 +802,34 @@
             return (values[lowMiddle] + values[highMiddle]) / 2;
         }
 
-        generatePointsInBorough(20, "Hackney and City of London");
+        let isPlaying = false;
+        let animationInterval = null;
+        let dates = Object.keys(cases_archive);
+        let dateIndex = dates.length - 1;
+        let playButton = document.querySelector('#play');
+        let timelineDate = document.querySelector('#timeline_date');
+        timelineDate.innerHTML = today;
+        
+        playButton.addEventListener('click',function(e){
+            if(!isPlaying){
+                playButton.innerHTML = "Pause";
+                animationInterval = setInterval(()=>{
+                    
+                    dateIndex = (dateIndex + 1) % dates.length;
+                    console.log("variable",document.querySelector("#primaryMapVariable").value)
+                    let tempCaseObject = {}
+                    tempCaseObject[dates[dateIndex]] = cases_archive[dates[dateIndex]]
+                    setPrimaryMapData(generateData(tempCaseObject), document.querySelector("#primaryMapVariable").value);
+                    timelineDate.innerHTML = dates[dateIndex];
+                }, 1000);
+            } else {
+                playButton.innerHTML = "Play";
+                clearInterval(animationInterval);
+            }
+            
+            isPlaying = !isPlaying;
+        });
+
 
         </script>
 

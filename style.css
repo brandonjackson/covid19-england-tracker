@@ -45,9 +45,14 @@ html, body { height: 100% }
 }
 .totals p.total_number{
     font-weight: bold;
-    font-size: 2em;
+    font-size: 1.5em;
     margin-bottom: 0px;
     color: red;
+}
+
+.totals .percentChange{
+    color: #FFCCCC;
+    font-size: 0.8em;
 }
 
 .totals p.total_location{
@@ -66,3 +71,7 @@ html, body { height: 100% }
     background-color: #EEE;
   }
   
+  .box{
+      margin-bottom: 40px;
+    }
+
