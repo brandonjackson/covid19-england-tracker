@@ -19,7 +19,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 </head>
 <body>
-    <nav class="navbar navbar-light bg-light">
+    <nav class="navbar navbar-dark">
         <a class="navbar-brand" href="#">
             COVID-19 Cases in England
         </a>
@@ -46,7 +46,12 @@
                 </div>
             </div>
             <div class="col-lg col-xl col-md">
-                <h5>Map of <select id="primaryMapVariable"><option value="populationRate">% of Population With COVID-19</option><option value="cases">Total Cases</option><option value="newCases">New Cases</option><option value="areaRate">Cases Per Square Kilometer</option></select></h5>
+                <h5>Map of <select id="primaryMapVariable">
+                    <option value="populationRate">% of Population With COVID-19</option>
+                    <option value="areaRate">Cases Per Square Kilometer</option>
+                    <option value="newCases">New Cases</option>
+                    <option value="cases">Total Cases</option>
+                </select></h5>
                 <div id="primarymap"></div>
                 <p><button id="play">Play</button> Date: <span id="timeline_date"></span></p>
                 <p><small>Data from <a href="https://www.gov.uk/government/publications/coronavirus-covid-19-number-of-cases-in-england/coronavirus-covid-19-number-of-cases-in-england">Public Health England</a>. Shows situation as of 2020-03-10 at 0900. New data released every afternoon / evening.</small></p>        
@@ -316,20 +321,30 @@
         function setPrimaryMapData(data, variable){
 
             const breaks = {
-                'cases': [0, 1, 2, 4, 8, 16, 32],
-                'newCases': [0, 1, 2, 4, 8, 16, 32],
-                'populationRate': [0, 0.00001, 0.00002, 0.00003, 0.00004, 0.00005, 0.00006],
-                'areaRate': [0, 0.01, 0.1, 0.5, 1, 2, 3]
+                'cases': [0, 3, 6, 9, 12, 15, 18],
+                'newCases': [0, 1, 2, 3, 4, 5, 6],
+                'populationRate': [0, 0.00002, 0.00004, 0.00006, 0.00008, 0.0001, 0.00012],
+                'areaRate': [0, 0.1, 0.25, 0.5, 0.75, 1, 1.25]
             }
 
+            // function calculateColor(number){
+            //     return number > breaks[variable][6] ? '#800026' :
+            //         number > breaks[variable][5]  ? '#BD0026' :
+            //         number > breaks[variable][4]  ? '#E31A1C' :
+            //         number > breaks[variable][3]  ? '#FC4E2A' :
+            //         number > breaks[variable][2]   ? '#FD8D3C' :
+            //         number > breaks[variable][1]   ? '#FEB24C' :
+            //         number > breaks[variable][0]   ? '#FED976' :
+            //                         '#FFFFFF';
+            // }
             function calculateColor(number){
-                return number > breaks[variable][6] ? '#800026' :
-                    number > breaks[variable][5]  ? '#BD0026' :
-                    number > breaks[variable][4]  ? '#E31A1C' :
-                    number > breaks[variable][3]  ? '#FC4E2A' :
-                    number > breaks[variable][2]   ? '#FD8D3C' :
-                    number > breaks[variable][1]   ? '#FEB24C' :
-                    number > breaks[variable][0]   ? '#FED976' :
+                return number > breaks[variable][6] ? '#0b253c' :
+                    number > breaks[variable][5]  ? '#0e2f65' :
+                    number > breaks[variable][4]  ? '#113b92' :
+                    number > breaks[variable][3]  ? '#3b5ea5' :
+                    number > breaks[variable][2]   ? '#6681b9' :
+                    number > breaks[variable][1]   ? '#8ba0ca' :
+                    number > breaks[variable][0]   ? '#c2d1f1' :
                                     '#FFFFFF';
             }
             
@@ -357,8 +372,8 @@
                     breaks[variable][i]*100 +'%' + (breaks[variable][i + 1] ? '<br>' : '+');
                 } else if(variable == "areaRate"){
                     legend.innerHTML +=
-                        '<i style="background:' + calculateColor(breaks[variable][i]) + '"></i> ' +
-                        breaks[variable][i] + (breaks[variable][i + 1] ? '&ndash;' + (breaks[variable][i + 1]*0.99) + '<br>' : '+');
+                        '<i style="background:' + calculateColor(breaks[variable][i]) + '"></i> <= ' +
+                        breaks[variable][i] + (breaks[variable][i + 1] ? '' + '<br>' : '+');
 
                 } else if(variable=="cases" || variable == "newCases"){
                     // used for generating ranges...we just need the single values right now
@@ -537,7 +552,7 @@
                 this._div.innerHTML += "<svg class='sparkline' width='100' height='30' stroke-width='3'></svg>";
                 this._div.innerHTML += "<br/>" + region.cases + ' cases';
                 if(region.newCases > 0){
-                    this._div.innerHTML += "<span style='color: red;'> (▲" + region.newCases + ")</span>";
+                    this._div.innerHTML += "<span class='increase'> (▲" + region.newCases + ")</span>";
                 }
                 if(region.populationRate != undefined){
                     this._div.innerHTML += "<br/>" + (region.populationRate * 100).toFixed(4) + '% of population';

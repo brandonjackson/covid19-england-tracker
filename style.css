@@ -33,12 +33,14 @@ html, body { height: 100% }
 }
 
 .sparkline {
-  stroke: red;
-  fill: #FFCCCC;
+  stroke: #113b92;
+  fill: #8ea5d4;
 }
-
+.increase{
+    color: #113b92;
+}
 .totals {
-    border: 1px solid red;
+    border: 1px solid #113b92;;
     margin-bottom: 20px;
     padding: 10px;
     text-align: center;;
@@ -47,11 +49,11 @@ html, body { height: 100% }
     font-weight: bold;
     font-size: 1.5em;
     margin-bottom: 0px;
-    color: red;
+    color: #113b92;
 }
 
 .totals .percentChange{
-    color: #FFCCCC;
+    color: #8ea5d4;
     font-size: 0.8em;
 }
 
@@ -75,3 +77,12 @@ html, body { height: 100% }
       margin-bottom: 40px;
     }
 
+    .navbar {
+        background-color: #113b92;
+        color: white;
+    }
+
+button#get_estimate{
+    background-color: #113b92;
+    color: white;
+}
