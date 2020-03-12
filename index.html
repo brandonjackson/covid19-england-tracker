@@ -11,11 +11,13 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="leaflet/leaflet.css" />
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/datatables.min.css"/>
+ 
     <script src="leaflet/leaflet.js"></script>
     <script src="counties.js"></script>
     <script src="sparkline.js"></script>
     <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
-    <script src="https://unpkg.com/random-points-generator"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.20/datatables.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 </head>
 <body>
@@ -30,19 +32,22 @@
             <div class="col-md-2 col-lg-2 col-xl-2">
                 <h5>Confirmed Cases</h5>
                 <div class="totals" id="inner_london_total">
+                    <p class="total_location">Inner London</p>
                     <svg class='sparkline' width='100' height='30' stroke-width='3'></svg>
                     <p class="total_number" >0</p>
-                    <p class="total_location">Inner London</p>
+                    <p class="total_change" >0</p>
                 </div>
                 <div class="totals" id="greater_london_total">
+                    <p class="total_location">Greater London</p class="total_location">
                     <svg class='sparkline' width='100' height='30' stroke-width='3'></svg>
                     <p class="total_number" >0</p>
-                    <p class="total_location">Greater London</p class="total_location">
+                    <p class="total_change" >0</p>
                 </div>
                 <div class="totals" id="england_total">
+                    <p class="total_location">England</p class="total_location">
                     <svg class='sparkline' width='100' height='30' stroke-width='3'></svg>
                     <p class="total_number">0</p>
-                    <p class="total_location">England</p class="total_location">
+                    <p class="total_change" >0</p>
                 </div>
             </div>
             <div class="col-lg col-xl col-md">
@@ -56,6 +61,7 @@
                 <p><button id="play">Play</button> Date: <span id="timeline_date"></span></p>
                 <p><small>Data from <a href="https://www.gov.uk/government/publications/coronavirus-covid-19-number-of-cases-in-england/coronavirus-covid-19-number-of-cases-in-england">Public Health England</a>. Shows situation as of 2020-03-11 at 0900. New data released every afternoon / evening.</small></p>        
                 <br />
+                
 
                
 
@@ -87,7 +93,7 @@
 
                 <div class='box'>
                     <h5>New Cases in London</h5>
-                    <table class="table" id="new_cases">
+                    <table class="table table-sm" id="new_cases">
                         <thead>
                             <tr>
                             <th scope="col">Borough</th>
@@ -104,6 +110,12 @@
             </div>
 
 
+        </div>
+        <div class="row">
+            <div class="col">
+            <h5>Regional Data</h5>
+            <table class="table display" id="raw_data"></table>
+        </div>
         </div>
         </div>
         <footer class="footer">
@@ -588,13 +600,39 @@
         });
 
         function updateTotals(){
-            document.querySelector("#inner_london_total .total_number").innerHTML = totals["Inner London"].total + "<br/><span class='percentChange'>▲ " + totals["Inner London"].newCases + " (" + totals["Inner London"].percentChange + "%)</span>";
+            document.querySelector("#inner_london_total .total_number").innerHTML = totals["Inner London"].total;
+            document.querySelector("#inner_london_total .total_change").innerHTML = "▲ " + totals["Inner London"].newCases + " (" + totals["Inner London"].percentChange + "%)";
             sparkline.sparkline(document.querySelector("#inner_london_total .sparkline"), totals["Inner London"].series, { interactive: true });
-            document.querySelector("#greater_london_total .total_number").innerHTML = totals["Greater London"].total + "<br/><span class='percentChange'>▲ " + totals["Greater London"].newCases + " (" + totals["Greater London"].percentChange + "%)</span>";
+            document.querySelector("#greater_london_total .total_number").innerHTML = totals["Greater London"].total;
+            document.querySelector("#greater_london_total .total_change").innerHTML = "▲ " + totals["Greater London"].newCases + " (" + totals["Greater London"].percentChange + "%)";
             sparkline.sparkline(document.querySelector("#greater_london_total .sparkline"), totals["Greater London"].series, { interactive: true });
-            document.querySelector("#england_total .total_number").innerHTML = totals["England"].total + "<br /><span class='percentChange'>▲ " + totals["England"].newCases + " (" + totals["England"].percentChange + "%)</span>";
+            document.querySelector("#england_total .total_number").innerHTML = totals["England"].total;
+            document.querySelector("#england_total .total_change").innerHTML = "▲ " + totals["England"].newCases + " (" + totals["England"].percentChange + "%)";
             sparkline.sparkline(document.querySelector("#england_total .sparkline"), totals["England"].series, { interactive: true });
         }
+
+        function generateTableData(){
+            let rows = []
+            for(region in data){
+                rows.push([data[region]["name"], data[region]["cases"], (data[region]["populationRate"]*100).toFixed(3)+"%", data[region]["newCases"], (data[region]["cases"] - data[region]["caseSeries"][0])]);
+            }
+            return rows;
+        }
+
+        $(document).ready(function() {
+            $('#raw_data').DataTable( {
+                data: generateTableData(),
+                columns: [
+                    { title: "Name" },
+                    { title: "Cases (Total)" },
+                    { title: "Cases (% of Population)" },
+                    { title: "▲ Daily" },
+                    { title: "▲ Weekly" }
+                ],
+                order: [[ 2, "desc" ]]
+            });
+        } );
+
 
         function generateNewCasesTable(){
             var sortable = []
@@ -622,6 +660,8 @@
 
         updateTotals();
         generateNewCasesTable();
+
+
 
 
         // var localmap = L.map('localmap').setView([51.505, -0.09], 10);
@@ -744,7 +784,7 @@
 
                         let estimate = document.querySelector('#estimate');
                         estimate.innerHTML = "<ul><li>Between " + (nearby.fiveminwalk / 3).toFixed(1) + " and " + nearby.fiveminwalk.toFixed(1) + " cases within a 5 minute walk</li><li>Between " + (nearby.fifteenminwalk / 3).toFixed(1) + " and " + nearby.fifteenminwalk.toFixed(1) + " cases within a 15 minute walk</li></ul>";
-                        estimate.innerHTML += "<small>⚠️ This is a rough estimate. Available data is not specific enough to make reliable predictions. Evidence from other cities shows cases of COVID-19 occur in family/household clusters. The range given above assumes number of cases per household varies from 1 to 3.</small><br /><br />"
+                        estimate.innerHTML += "<small>⚠️ This is a rough estimate. Available data is not specific enough to make reliable predictions. Evidence from <a href='https://chp-dashboard.geodata.gov.hk/covid-19/en.html'>other</a> <a href='https://co.vid19.sg/cases'>cities</a> shows cases of COVID-19 occur in family/household clusters. The range given above assumes number of cases per household varies from 1 to 3.</small><br /><br />"
                     });
                 });
         });
