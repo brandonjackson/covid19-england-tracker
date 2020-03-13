@@ -38,12 +38,12 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col">
-                <h2>Londoners are catching a dangerous disease called COVID-19. This is their story.</h2>
+                <h2>Londoners are catching a disease called COVID-19. This is their story.</h2>
                 <p id="model" class='lead'>
                     As they were getting on with their lives, they were sadly infected with the SARS-CoV-2 virus. 
                     <span data-var="incubationPeriod" class="TKAdjustableNumber" data-min="3" data-max="14" title="This is called the incubation period"> days</span> later they began to notice their first symptoms.
-                    After <span data-var="testDelay" class="TKAdjustableNumber" data-min="0" data-max="7"> days</span>, <span data-var="testRate" class="TKAdjustableNumber" data-min="0" data-max="100">%</span> of them were able to get tested. Those people got results back in <span data-var="resultsDelay" class="TKAdjustableNumber" data-min="0" data-max="4"> days</span>.
-                    This means that the <span data-var="confirmed"></span> cases that the NHS has confirmed in London as of this morning were actually infected around <span data-var="preResultsDuration"></span> days ago. Unfortunately, during that time the virus has been spreading. People are highly contagious for <span data-var="daysContagiousAfter" class="TKAdjustableNumber" data-min="5" data-max="14"> days</span> after symptoms appear...and <span data-var="daysContagiousBefore" class="TKAdjustableNumber" data-min="0" data-max="2"> day</span> before. Our best guess is that there are <b><span data-var="cases"></span> infected people</b> in London right now.
+                    After <span data-var="testDelay" class="TKAdjustableNumber" data-min="0" data-max="7"> days</span> of being ill, <span data-var="testRate" class="TKAdjustableNumber" data-min="0" data-max="100">%</span> of them were able to get tested. They got the news <span data-var="resultsDelay" class="TKAdjustableNumber" data-min="0" data-max="4"> day</span> later.
+                    This means that the <span data-var="confirmed"></span> cases that the NHS has confirmed in London as of this morning were first infected around <span data-var="preResultsDuration"></span> days ago. Unfortunately, during that time the virus has been spreading. People are highly contagious for <span data-var="daysContagiousAfter" class="TKAdjustableNumber" data-min="5" data-max="14"> days</span> after symptoms appear...and <span data-var="daysContagiousBefore" class="TKAdjustableNumber" data-min="0" data-max="2"> day</span> before. Our best guess is that there are <b><span data-var="cases"></span> infected people</b> in London right now.
                 </p>
             </div>
         </div>
@@ -680,7 +680,7 @@
                     this.incubationPeriod = 5;
                     this.testRate = 80;
                     this.testDelay = 2;
-                    this.resultsDelay = 2;
+                    this.resultsDelay = 1;
                     this.daysContagiousBefore = 1;
                     this.daysContagiousAfter = 7;
                 },
