@@ -20,6 +20,9 @@ html, body { height: 100% }
     margin: 0 0 5px;
     color: #777;
 }
+.info table tr td{
+    vertical-align: top;
+}
 .legend {
     line-height: 18px;
     color: #555;
