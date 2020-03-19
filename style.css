@@ -4,7 +4,7 @@ html, body { height: 100% }
     margin-top: 20px;
 }
 
-#primarymap, #localmap {
+#primarymap {
     width: 100%;
     height: 480px;
 }
@@ -15,6 +15,9 @@ html, body { height: 100% }
     background: rgba(255,255,255,0.8);
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
     border-radius: 5px;
+}
+.info #logplot{
+    display: block;
 }
 .info h4 {
     margin: 0 0 5px;
@@ -88,4 +91,8 @@ html, body { height: 100% }
 button#get_estimate{
     background-color: #113b92;
     color: white;
+}
+
+.leaflet-container{
+    background: #FFF;
 }

@@ -90,14 +90,6 @@
                 <p><small>Data from <a href="https://www.gov.uk/government/publications/coronavirus-covid-19-number-of-cases-in-england/coronavirus-covid-19-number-of-cases-in-england">Public Health England</a>. Shows situation as of <span id="today"></span> at 0900. New data released every afternoon / evening.</small></p>        
                 <br />
                 
-
-               
-
-                <!-- <h5>London Boroughs</h5>
-                <select id="borough-picker"></select>
-                <p><b><span id="borough_total">0</span></b> cases have been confirmed in <b><span id="borough_name">Hackney</span></b>.</p>
-                <p>We don't have data about where exactly the cases are. Here is a simulation of what that number of cases might look like spread <em>randomly</em> across the borough.</p>
-                <div id="localmap"></div> -->
             </div>
             <div class="col-md-3 col-lg-3 col-xl-3 ">
 
@@ -561,15 +553,15 @@
         calculateAllTotals();
 
 
-        var primarymap = L.map('primarymap').setView([51.505, -0.09], 10);
-        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-            maxZoom: 18,
-            id: 'mapbox/streets-v11',
-            tileSize: 512,
-            zoomOffset: -1,
-            accessToken: 'pk.eyJ1IjoiYnJhbmRvbmphY2tzb24iLCJhIjoiY2s3aTFuYXZwMGY0ODNubW45d24yMGUxMiJ9.ruZUCY7P0KzZYhzDU_aQRg'
-        }).addTo(primarymap);
+        var primarymap = L.map('primarymap').setView([51.505, -0.09], 9);
+        // L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+        //     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        //     maxZoom: 18,
+        //     id: 'mapbox/streets-v11',
+        //     tileSize: 512,
+        //     zoomOffset: -1,
+        //     accessToken: 'pk.eyJ1IjoiYnJhbmRvbmphY2tzb24iLCJhIjoiY2s3aTFuYXZwMGY0ODNubW45d24yMGUxMiJ9.ruZUCY7P0KzZYhzDU_aQRg'
+        // }).addTo(primarymap);
 
         function highlightFeature(e) {
             var layer = e.target;
@@ -647,7 +639,60 @@
                 }
 
                 infoHTML += "</td></tr></table>"
+                infoHTML += "<div id='logplot'></div>"
                 this._div.innerHTML = infoHTML;
+
+                console.log(region.caseSeries.length );
+                console.log(region.caseSeries);
+                var confirmedLine = {
+                    x: _.range(0,region.caseSeries.length),
+                    y: region.caseSeries,
+                    mode: 'lines',
+                    name: 'Solid',
+                    line: {
+                        dash: 'solid',
+                        width: 4,
+                        color: '#113b92'
+                    }
+                };
+
+                console.log(_.range(region.caseSeries.length -1 ,region.caseSeries.length + region.predictions.length))
+                console.log(region.predictions)
+                var estimatedLine = {
+                    x: _.range(region.caseSeries.length - 1 ,region.caseSeries.length + region.predictions.length),
+                    y: _.union([_.last(region.caseSeries)], region.predictions),
+                    mode: 'lines',
+                    name: 'Estimated Cases',
+                    line: {
+                        dash: 'dot',
+                        width: 4,
+                        color: '#113b92'
+                    },
+                };
+
+
+                var plotlyData = [confirmedLine, estimatedLine];
+
+                var layout = {
+                    xaxis: {
+                        autorange: true,
+                    },
+                    yaxis: {
+                        type: 'log',
+                        range: [0,4]
+                    },
+                    showlegend: false,
+                    margin: {
+                        t: 30,
+                        r: 30,
+                        b: 30,
+                        l: 30,
+                    },
+                    height: 200,
+                    width: 200
+                };
+
+                Plotly.newPlot('logplot', plotlyData, layout);
 
                 sparkline.sparkline(document.querySelector(".info .sparkline.confirmed"), region.caseSeries);
                 sparkline.sparkline(document.querySelector(".info .sparkline.estimated"), _.union(region.caseSeries, region.predictions));
@@ -658,6 +703,9 @@
             
         };
         info.addTo(primarymap);
+
+        
+
 
         // Create Legend
         var legend = L.control({position: 'bottomright'});
@@ -686,7 +734,7 @@
         function generateTableData(){
             let rows = []
             for(region in data){
-                rows.push([data[region]["name"], data[region]["cases"], (data[region]["populationRate"]*100).toFixed(3)+"%", data[region]["newCases"], (data[region]["cases"] - data[region]["caseSeries"][0])]);
+                rows.push([data[region]["name"], data[region]["cases"], data[region]["populationRate"], data[region]["newCases"], (data[region]["cases"] - data[region]["caseSeries"][0])]);
             }
             return rows;
         }
@@ -810,7 +858,7 @@
                 columns: [
                     { title: "Name" },
                     { title: "Cases (Total)" },
-                    { title: "Cases (% of Population)" },
+                    { title: "Cases (Per 1000)" },
                     { title: "▲ Daily" },
                     { title: "▲ Weekly" }
                 ],
@@ -905,7 +953,7 @@
                         }).addTo(primarymap);
 
                         let estimate = document.querySelector('#estimate');
-                        estimate.innerHTML = "<ul><li>Between " + (nearby.fiveminwalk / 3).toFixed(1) + " and " + nearby.fiveminwalk.toFixed(1) + " cases within a 5 minute walk</li><li>Between " + (nearby.fifteenminwalk / 3).toFixed(1) + " and " + nearby.fifteenminwalk.toFixed(1) + " cases within a 15 minute walk</li></ul>";
+                        estimate.innerHTML = "<ul><li>Between " + Math.round(nearby.fiveminwalk / 3) + " and " + Math.round(nearby.fiveminwalk) + " cases within a 5 minute walk</li><li>Between " + Math.round(nearby.fifteenminwalk / 3) + " and " + Math.round(nearby.fifteenminwalk) + " cases within a 15 minute walk</li></ul>";
                         estimate.innerHTML += "<small>⚠️ This is a rough estimate. Available data is not specific enough to make reliable predictions. Evidence from <a href='https://chp-dashboard.geodata.gov.hk/covid-19/en.html'>other</a> <a href='https://co.vid19.sg/cases'>cities</a> shows cases of COVID-19 occur in family/household clusters. The range given above assumes number of cases per household varies from 1 to 3.</small><br /><br />"
                     });
                 });
