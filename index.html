@@ -147,7 +147,7 @@
         </div>
 
 
-        <div class="row">
+        <div class="row d-none d-lg-block d-xl-block">
             <div class="col">
             <h5>Regional Data</h5>
             <table class="table display" id="raw_data"></table>
@@ -356,24 +356,24 @@
         }
 
         let modelData = {
-                    "region": "London",
-                    "confirmed": 0,
-                    "incubationPeriod": 5,
-                    "testRate": 50,
-                    "testDelay": 2,
-                    "resultsDelay": 1,
-                    "daysContagiousBefore": 1,
-                    "daysContagiousAfter": 7,
-                    "dataAge": "this",
-                    "preResultsDuration": 9,
-                    "cases": 0,
-                    "contagious": 0,
-                    "noSymptoms": 0,
-                    "preLockdownGrowth": 33,
-                };
+            "region": "London",
+            "confirmed": 0,
+            "incubationPeriod": 5,
+            "testRate": 50,
+            "testDelay": 2,
+            "resultsDelay": 1,
+            "daysContagiousBefore": 1,
+            "daysContagiousAfter": 7,
+            "dataAge": "this",
+            "preResultsDuration": 9,
+            "cases": 0,
+            "contagious": 0,
+            "noSymptoms": 0,
+            "preLockdownGrowth": 33,
+        };
 
         function generateData(cases){
-            let data = {};
+            let dataObj = {};
             const dates = Object.keys(cases);
             const yesterday = dates[dates.length - 2];
             const today = dates[dates.length - 1];
@@ -421,11 +421,9 @@
                     if(i > 0){
                         prevDay = region.predictions[region.predictions.length - 1]
                     }
-                    console.log(prevDay);
                     let newDay = prevDay * (1 + (modelData.preLockdownGrowth/100));
                     region.predictions.push(newDay)
                 }
-                console.log(region.predictions)
 
                 region.estimatedPopulationRate = ((_.last(region.predictions) / region.population) * 1000).toFixed(1);
                 region.estimatedAreaRate = _.last(region.predictions) / region.area;
@@ -436,11 +434,16 @@
                 }
 
                 // Save to the list
-                data[place] = region;
+                dataObj[place] = region;
             }
-            return data;
+            return dataObj;
         }
+
         let data = generateData(cases_archive);
+        function setData(newData){
+            data = newData;
+        }
+
 
         function setPrimaryMapData(data, variable){
 
@@ -615,14 +618,6 @@
         }
 
         var primarymap = L.map('primarymap').setView([51.505, -0.09], 9);
-        // L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-        //     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        //     maxZoom: 18,
-        //     id: 'mapbox/streets-v11',
-        //     tileSize: 512,
-        //     zoomOffset: -1,
-        //     accessToken: 'pk.eyJ1IjoiYnJhbmRvbmphY2tzb24iLCJhIjoiY2s3aTFuYXZwMGY0ODNubW45d24yMGUxMiJ9.ruZUCY7P0KzZYhzDU_aQRg'
-        // }).addTo(primarymap);
 
         function highlightFeature(e) {
             var layer = e.target;
@@ -701,11 +696,9 @@
                 }
 
                 infoHTML += "</td></tr></table>"
-                infoHTML += "<div id='logplot'></div>"
+                infoHTML += "<div id='logplot' class='d-none d-lg-block d-xl-block'></div>"
                 this._div.innerHTML = infoHTML;
 
-                //console.log(region.caseSeries.length );
-                //console.log(region.caseSeries);
                 var confirmedLine = {
                     x: _.range(0,region.caseSeries.length),
                     y: region.caseSeries,
@@ -718,8 +711,6 @@
                     }
                 };
 
-                //console.log(_.range(region.caseSeries.length -1 ,region.caseSeries.length + region.predictions.length))
-                //console.log(region.predictions)
                 var estimatedLine = {
                     x: _.range(region.caseSeries.length - 1 ,region.caseSeries.length + region.predictions.length),
                     y: _.union([_.last(region.caseSeries)], region.predictions),
@@ -894,14 +885,16 @@
                 };
 
                 modelData = _.clone(this);
-                data = generateData(cases_archive);
-                setPrimaryMapData(data, document.querySelector("#primaryMapVariable").value)
-                console.log(data)
+                let newData = generateData(cases_archive);
+                setData(newData)
+                setPrimaryMapData(newData, document.querySelector("#primaryMapVariable").value)
             }
         };
 
         $(document).ready(function() {
             document.querySelector('#primaryMapVariable').addEventListener('change', (event)=>{
+                console.log(modelData);
+                console.log(data);
                 setPrimaryMapData(data, event.target.value)
             });
             updateTotals();
@@ -978,13 +971,9 @@
         form.addEventListener('submit', function(e){
             e.preventDefault();
             let postcode = document.querySelector("#postcode").value.replace(/\s/g,'');
-            console.log(postcode);
             fetch('https://api.postcodes.io/postcodes/' + postcode)
                 .then(response => {
-                    console.log(response);
                     response.json().then(function(data) {
-                        console.log(data.result.latitude);
-                        console.log(data.result.longitude);
                         let center = [data.result.latitude, data.result.longitude];
                         let nearby = calculateNearbyCases(center[0], center[1]);
                         
@@ -1023,7 +1012,6 @@
             let fifteenminwalk_regions = [];
             for(var i = 0; i < counties.features.length; i++){
                 if(counties.features[i].geometry.type != "Polygon"){
-                    // console.log("Skipping " + counties.features[i].properties.ctyua15nm)
                     continue;
                 }
                 if(turf.booleanPointInPolygon(center, counties.features[i])){
@@ -1098,7 +1086,6 @@
                 animationInterval = setInterval(()=>{
                     
                     dateIndex = (dateIndex + 1) % dates.length;
-                    console.log("variable",document.querySelector("#primaryMapVariable").value)
                     let tempCaseObject = {}
                     tempCaseObject[dates[dateIndex]] = cases_archive[dates[dateIndex]]
                     setPrimaryMapData(generateData(tempCaseObject), document.querySelector("#primaryMapVariable").value);
