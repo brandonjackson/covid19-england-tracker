@@ -95,3 +95,9 @@ button#get_estimate{
 .leaflet-container{
     background: #FFF;
 }
+
+img#interaction-guide {
+    border-radius: 10px;
+    border: 2px solid blue;
+    height: 50px;
+}
