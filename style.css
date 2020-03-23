@@ -97,7 +97,7 @@ button#get_estimate{
 }
 
 img#interaction-guide {
-    border-radius: 10px;
-    border: 2px solid blue;
+    border-radius: 0px;
+    border: 1px solid #aaa;
     height: 50px;
 }
