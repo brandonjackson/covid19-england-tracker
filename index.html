@@ -40,7 +40,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col">
-                <div class="alert alert-primary" role="alert">
+                <div class="alert alert-warning" role="alert">
                     Like light from a distant star that takes years to reach our eyes, data from the NHS is a snapshot of infections that happened 7+ days ago. To know what's happening <i>right now</i>, this site uses an <a href="#model">interactive model</a> to estimate what happened during that time.
                 </div>
             </div>
@@ -112,24 +112,44 @@
 
         </div>
         <div class="row">
+            <div class="col-md-2 col-lg-2 col-xl-2">
+            </div>
             <div class="col">
                 <h2><a name="model">Interactive Model</a></h2>
-                <img src="interaction.gif" id="interaction-guide" title="Play with the model!" /> This model is editable. Drag the blue numbers to update the estimates!
+                <div class="alert alert-primary" role="alert">
+                    <img src="interaction.gif" id="interaction-guide" title="Play with the model!" /> This model is editable. Drag the blue numbers to update the estimates!
+                </div>
                 <p id="model" class='lead' style='margin-top: 20px;'>
                     Londoners are catching a disease called COVID-19. As they were getting on with their lives, they were sadly infected with the SARS-CoV-2 virus. 
-                    <span data-var="incubationPeriod" class="TKAdjustableNumber" data-min="3" data-max="14" title="This is called the incubation period"> days</span> later they began to notice their first symptoms.
+                    <span data-var="incubationPeriod" class="TKAdjustableNumber" data-min="4" data-max="6" title="This is called the incubation period"> days</span> later they began to notice their first symptoms.
                     After <span data-var="testDelay" class="TKAdjustableNumber" data-min="0" data-max="7"> days</span> of being ill, <span data-var="testRate" class="TKAdjustableNumber" data-min="0" data-max="100">%</span> of them were able to get tested. They got the news <span data-var="resultsDelay" class="TKAdjustableNumber" data-min="0" data-max="4"> day</span> later.
                     This means that the <span data-var="confirmed"></span> cases that the NHS has confirmed in London as of <span data-var="dataAge"></span> morning were first infected around <span data-var="preResultsDuration"></span> days ago. 
-                    Unfortunately, during that time the virus has been spreading at a rate of <span data-var="preLockdownGrowth" class="TKAdjustableNumber" data-min="0" data-max="40">%</span> each day. People are highly contagious for <span data-var="daysContagiousAfter" class="TKAdjustableNumber" data-min="5" data-max="14"> days</span> after symptoms appear...and <span data-var="daysContagiousBefore" class="TKAdjustableNumber" data-min="0" data-max="2"> day</span> before. 
+                    Unfortunately, during that time the virus has been spreading exponentially, at an estimated rate of <span data-var="preLockdownGrowth" class="TKAdjustableNumber" data-min="0" data-max="40">%</span> each day. People are highly contagious for <span data-var="daysContagiousAfter" class="TKAdjustableNumber" data-min="5" data-max="14"> days</span> after symptoms appear...and <span data-var="daysContagiousBefore" class="TKAdjustableNumber" data-min="0" data-max="2"> day</span> before.
                     With these assumptions we can estimate that there are <b><span data-var="cases"></span> infected people</b> in London right now.
                     <b><span data-var="noSymptoms"></span> people</b> don't have symptoms yet.
                     <b><span data-var="contagious"></span> people</b> are contagious.
-                    
                 </p>
+                <h4>Technical Details</h4>
+                <p>The estimates are generated using a simple model of exponential growth. The goal of the model is intelligibility, allowing users to explore the data for themselves. The key assumptions of the model are:</p>
+                <ul>
+                    <li>The NHS data captures infections that occurred many days ago. This delay between infection and data being reported to the public is a constant.</li>
+                    <li>The number of cases reported by the NHS consistently underestimates the actual number of cases by a scale factor. This is phrased in the model as the % of people who are sick who get a test.</li>
+                    <li>The virus is growing exponentially at a consistent growth rate. Each region grows at this rate. Local estimates are not used due to noisy measurements.</li>
+                </ul>
+                <p>The rough algorithm for finding the number of infections today is as follows:</p>
+                    <ol>
+                        <li>Find <var>scaledConfirmedCases</var>: Scale the latest number of confirmed cases by an estimate of what % of people have been tested. For example, if the NHS reports 1965 cases, and 50% are tested, scaledConfirmedCases = 3930 cases.</li>
+                        <li>Find <var>delayDays</var>: Estimate the delay between infection and data reporting. For example, if incubation period is 5 days, people get tested after 2 days, and it takes 1 day to get results, then delayDays = 8.</li>
+                        <li>Find <var>growthRate</var>: Calculate an average daily growth rate for London. This can be estimated by looking at the growth in official count of cases, or alternatively, by the growth in the official death rate.</li>
+                        <li>infectionsToday = scaledConfirmedCases * growthRate ^ delayDays. For example, infectionsToday = 3930 * (1.27)^8 = 26596.</li>
+                    </ol>
+                    </p>
+                <p>How Nearby Estimates Work: The number of nearby cases is calculated in two steps. First, the number of infections in each borough is estimated using the exponential growth model described above. Second, the number of cases nearby is calculated using a simple Monte Carlo method. The postcode is converted into a latitude and longitude point. A circle is drawn of radius 400m (for the 5 minute walk) and 1200m (for the 15 minute walk). For each borough these circles touch, a set of random points equal to the number of estimated cases is generated. The number of cases inside the circles are counted. This is done 1000 times. The average represents the number of cases nearby if each case is spatially isolated. Evidence from <a href='https://chp-dashboard.geodata.gov.hk/covid-19/en.html'>other</a> <a href='https://co.vid19.sg/cases'>cities</a> shows cases of COVID-19 occur in family/household clusters. This pure average is divided by 3 to generate a range, which reflects the situation if the number of cases per household varies from 1 to 3.</p>
                 <div id="casesPlot"></div>
             </div>
+            <div class="col-md-3 col-lg-3 col-xl-3 "></div>
         </div>
-        <div class='row'>
+        <div class='row d-none'>
             <div class='col'>
             <h2>New Cases in London</h2>
             <table class="table table-sm" id="new_cases">
@@ -148,7 +168,7 @@
         </div>
 
 
-        <div class="row d-none d-lg-block d-xl-block">
+        <div class="row d-none ">
             <div class="col">
             <h5>Regional Data</h5>
             <table class="table display" id="raw_data"></table>
@@ -981,6 +1001,7 @@
             fetch('https://api.postcodes.io/postcodes/' + postcode)
                 .then(response => {
                     response.json().then(function(data) {
+                        console.log(data.result);
                         let center = [data.result.latitude, data.result.longitude];
                         let nearby = calculateNearbyCases(center[0], center[1]);
                         
@@ -1002,9 +1023,26 @@
                             fillOpacity: 0
                         }).addTo(primarymap);
 
+                        console.log(nearby);
+
                         let estimate = document.querySelector('#estimate');
-                        estimate.innerHTML = "<ul><li>Between " + Math.round(nearby.fiveminwalk / 3) + " and " + Math.round(nearby.fiveminwalk) + " cases within a 5 minute walk</li><li>Between " + Math.round(nearby.fifteenminwalk / 3) + " and " + Math.round(nearby.fifteenminwalk) + " cases within a 15 minute walk</li></ul>";
-                        estimate.innerHTML += "<small>⚠️ This is a rough estimate. Available data is not specific enough to make reliable predictions. Evidence from <a href='https://chp-dashboard.geodata.gov.hk/covid-19/en.html'>other</a> <a href='https://co.vid19.sg/cases'>cities</a> shows cases of COVID-19 occur in family/household clusters. The range given above assumes number of cases per household varies from 1 to 3.</small><br /><br />"
+                        let estimateHTML = ""
+                        let contagiousRate = modelData.contagious / modelData.cases;
+                        let asymptomaticRate = modelData.noSymptoms / modelData.cases;
+                        estimateHTML += data.result.postcode + " is located in <b>" + data.result.admin_district + "</b>. The model estimates that within a <b>5 minute walk</b> there are:";
+                        estimateHTML += "<ul>";
+                        estimateHTML += "<li>Between " + Math.round(nearby.fiveminwalk / 3) + " and " + Math.round(nearby.fiveminwalk) + " cases</li>";
+                        estimateHTML += "<li>Between " + Math.round((nearby.fiveminwalk / 3)*contagiousRate) + " and " + Math.round(nearby.fiveminwalk * contagiousRate) + " are contagious</li>";
+                        estimateHTML += "<li>Between " + Math.round((nearby.fiveminwalk / 3)*asymptomaticRate ) + " and " + Math.round(nearby.fiveminwalk * asymptomaticRate ) + " don't have symptoms yet</li>";
+                        estimateHTML += "</ul>"
+                        estimateHTML += "<p>Within a <b>15 minute walk</b> there are:</p>"
+                        estimateHTML += "<ul>";
+                        estimateHTML += "<li>Between " + Math.round(nearby.fifteenminwalk / 3) + " and " + Math.round(nearby.fifteenminwalk) + " cases</li>";
+                        estimateHTML += "<li>Between " + Math.round((nearby.fifteenminwalk / 3)*contagiousRate) + " and " + Math.round(nearby.fifteenminwalk * contagiousRate) + " are contagious</li>";
+                        estimateHTML += "<li>Between " + Math.round((nearby.fifteenminwalk / 3)*asymptomaticRate ) + " and " + Math.round(nearby.fifteenminwalk * asymptomaticRate ) + " don't have symptoms yet</li>";
+                        estimateHTML += "</ul>"
+                        estimateHTML += "<small>⚠️ These numbers are <em>estimates</em> based on the number of infections predicted to be active in the surrounding boroughs: " + nearby.regions.join(",") + ". Read more in <a href='#model'>How the Model Works</a> section.</small><br /><br />"
+                        estimate.innerHTML = estimateHTML;
                     });
                 });
         });
@@ -1061,6 +1099,7 @@
             }
 
             return {
+                'regions': fifteenminwalk_regions,
                 'fiveminwalk': arrayAverage(fiveminwalk_counts),
                 'fifteenminwalk': arrayAverage(fifteenminwalk_counts)
             }

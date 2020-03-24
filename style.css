@@ -101,3 +101,7 @@ img#interaction-guide {
     border: 1px solid #aaa;
     height: 50px;
 }
+
+.TKAdjustableNumber {
+    font-weight: bold;
+}
